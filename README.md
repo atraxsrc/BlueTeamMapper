@@ -32,8 +32,9 @@ https://atraxsrc.github.io/BlueTeamMapper/
 - Responsive design, monospace typography, semantic color highlighting
 
 ## Screenshots
+<img width="1753" height="1357" alt="Screenshot_2026-03-03_21-39-38" src="https://github.com/user-attachments/assets/3278b2a5-9c6f-4001-a395-a2d7fbee72fd" />
+<img width="1507" height="501" alt="Screenshot_2026-03-03_21-38-56" src="https://github.com/user-attachments/assets/2d6925eb-2cc0-443e-8b92-63bf44b22f6f" />
 
-(You can add 1–3 screenshots here later – e.g. the main diagram, a flow chain, a details card grid)
 
 ## Tech Stack
 
