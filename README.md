@@ -1,6 +1,6 @@
 # Blue Team Mapper v2.0
 
-[![GitHub Pages](https://github.com/atraxsrc/BlueTeamMapper/actions/workflows/pages/pages-build-deployment/badge.svg)](https://atraxsrc.github.io/BlueTeamMapper/)
+[![GitHub Pages](https://github.com/atraxsrc/BlueTeamMapper/actions/workflows/pages/pages-build-deployment/badge.svg)](https://atraxsrc.github.io/BlueTeamMapper/)   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Tokyo Night Theme](https://img.shields.io/badge/theme-Tokyo%20Night-blueviolet)](https://github.com/enkia/tokyo-night-vscode-theme)
 
 **Comprehensive visual reference & workflow mapper for blue team / defensive security operations.**
 
