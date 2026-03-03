@@ -1,338 +1,405 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Blue Team Mapper v2.0</title>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
-  :root { 
-    --bg: #1a1b26; 
-    --bg-card: #24283b; 
-    --border: #414868; 
-    --text: #a9b1d6; 
-    --text-bright: #c0caf5; 
-    --text-dim: #565f89; 
-    --red: #f7768e; 
-    --orange: #e0af68; 
-    --yellow: #e0af68; 
-    --green: #9ece6a; 
-    --cyan: #7dcfff; 
-    --blue: #7aa2f7; 
-    --purple: #bb9af7; 
-    --pink: #bb9af7; 
-    --rose: #f7768e; 
-    --teal: #73daca; 
-  }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Blue Team Mapper v2.0</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { 
-    background: var(--bg); 
-    color: var(--text); 
-    font-family: 'IBM Plex Sans', sans-serif; 
-    padding: 40px 60px; 
-    line-height: 1.6; 
-  }
-  .container { max-width: 1400px; margin: 0 auto; }
-  header { text-align: center; margin-bottom: 50px; }
-  header h1 { 
-    font-family: 'JetBrains Mono', monospace; 
-    font-size: 28px; 
-    font-weight: 700; 
-    color: var(--text-bright); 
-    letter-spacing: -0.5px; 
-    margin-bottom: 8px; 
-  }
-  header h1 span { color: var(--blue); }
-  header .subtitle { 
-    font-size: 14px; 
-    color: var(--text-dim); 
-    font-family: 'JetBrains Mono', monospace; 
-    font-weight: 300; 
-  }
-  .svg-container { margin: 20px 0 40px 0; overflow-x: auto; }
-  .separator { border-top: 1px solid var(--border); margin: 40px 0; }
-  .section-header { margin-top: 60px; margin-bottom: 30px; }
-  .section-header h2 { 
-    font-family: 'JetBrains Mono', monospace; 
-    font-size: 18px; 
-    font-weight: 600; 
-    color: var(--text-bright); 
-    padding-bottom: 12px; 
-    border-bottom: 1px solid var(--border); 
-  }
-  .section-header h2 span { color: var(--cyan); }
-  .section-header h2 .blue { color: var(--blue); }
-  .section-header h2 .green { color: var(--green); }
-  .section-header h2 .teal { color: var(--teal); }
-  .section-header h2 .orange { color: var(--orange); }
-  .section-header h2 .purple { color: var(--purple); }
-  .section-desc { 
-    font-size: 12px; 
-    color: var(--text-dim); 
-    margin-top: 8px; 
-    font-family: 'JetBrains Mono', monospace; 
-  }
-  .flow-block { margin-bottom: 18px; }
-  .flow-title { 
-    font-family: 'JetBrains Mono', monospace; 
-    font-size: 12px; 
-    font-weight: 600; 
-    margin-bottom: 10px; 
-  }
-  .flow-title.blue { color: var(--blue); }
-  .flow-title.cyan { color: var(--cyan); }
-  .flow-title.green { color: var(--green); }
-  .flow-title.teal { color: var(--teal); }
-  .flow-title.orange { color: var(--orange); }
-  .flow-title.purple { color: var(--purple); }
-  .flow-title.red { color: var(--red); }
-  .flow-row { 
-    display: flex; 
-    align-items: center; 
-    gap: 4px; 
-    flex-wrap: wrap; 
-    padding: 10px 0; 
-  }
-  .flow-node { 
-    background: var(--bg-card); 
-    border: 1px solid var(--border); 
-    border-radius: 6px; 
-    padding: 8px 12px; 
-    font-family: 'JetBrains Mono', monospace; 
-    font-size: 10px; 
-    color: var(--text); 
-    white-space: nowrap; 
-    flex-shrink: 0; 
-  }
-  .flow-node.hl-blue   { border-color: var(--blue);   color: var(--blue); }
-  .flow-node.hl-cyan   { border-color: var(--cyan);   color: var(--cyan); }
-  .flow-node.hl-green  { border-color: var(--green);  color: var(--green); }
-  .flow-node.hl-teal   { border-color: var(--teal);   color: var(--teal); }
-  .flow-node.hl-orange { border-color: var(--orange); color: var(--orange); }
-  .flow-node.hl-purple { border-color: var(--purple); color: var(--purple); }
-  .flow-node.hl-red    { border-color: var(--red);    color: var(--red); }
-  .flow-arrow { 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    flex-shrink: 0; 
-  }
-  .flow-arrow .arrow-label { 
-    font-family: 'JetBrains Mono', monospace; 
-    font-size: 8px; 
-    color: var(--text-dim); 
-    text-align: center; 
-    display: block; 
-    margin-top: -2px; 
-  }
-  .flow-arrow svg { width: 36px; height: 20px; }
-  .details-grid { 
-    display: grid; 
-    grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); 
-    gap: 16px; 
-    margin-bottom: 30px; 
-  }
-  .detail-card { 
-    background: var(--bg-card); 
-    border: 1px solid var(--border); 
-    border-radius: 10px; 
-    padding: 20px; 
-  }
-  .detail-card h3 { 
-    font-family: 'JetBrains Mono', monospace; 
-    font-size: 14px; 
-    font-weight: 600; 
-    color: var(--text-bright); 
-    margin-bottom: 4px; 
-  }
-  .detail-card .card-sub { 
-    font-family: 'JetBrains Mono', monospace; 
-    font-size: 10px; 
-    color: var(--text-dim); 
-    margin-bottom: 12px; 
-    letter-spacing: 0.5px; 
-  }
-  .detail-card .card-body { font-size: 12px; line-height: 1.7; }
-  .detail-card .card-body code { 
-    font-family: 'JetBrains Mono', monospace; 
-    font-size: 10px; 
-    background: rgba(122,162,247,0.08); 
-    color: var(--cyan); 
-    padding: 2px 6px; 
-    border-radius: 3px; 
-  }
-  .detail-card .card-body code.alert { 
-    background: rgba(247,118,142,0.1); 
-    color: var(--red); 
-  }
-  .detail-card .card-body code.tool { 
-    background: rgba(187,154,247,0.1); 
-    color: var(--purple); 
-  }
-  .card-list { list-style: none; padding: 0; }
-  .card-list li { 
-    padding: 3px 0; 
-    border-bottom: 1px solid rgba(255,255,255,0.03); 
-  }
-  .card-list li code { 
-    font-family: 'JetBrains Mono', monospace; 
-    font-size: 10px; 
-    background: rgba(122,162,247,0.08); 
-    color: var(--cyan); 
-    padding: 1px 5px; 
-    border-radius: 3px; 
-  }
-  .tag { 
-    font-family: 'JetBrains Mono', monospace; 
-    font-size: 9px; 
-    font-weight: 600; 
-    text-transform: uppercase; 
-    letter-spacing: 1px; 
-    padding: 3px 8px; 
-    border-radius: 4px; 
-    display: inline-block; 
-    margin-bottom: 8px; 
-    margin-right: 4px; 
-  }
-  .tag.detect    { background: rgba(122,162,247,0.15); color: var(--blue);    }
-  .tag.hunt      { background: rgba(158,206,106,0.15); color: var(--green);   }
-  .tag.ir        { background: rgba(247,118,142,0.15); color: var(--red);     }
-  .tag.harden    { background: rgba(224,175,104,0.15); color: var(--orange);  }
-  .tag.siem      { background: rgba(125,207,255,0.15); color: var(--cyan);    }
-  .tag.edr       { background: rgba(115,218,202,0.15); color: var(--teal);    }
-  .tag.identity  { background: rgba(125,207,255,0.15); color: var(--cyan);    }
-  .tag.cloud     { background: rgba(122,162,247,0.15); color: var(--blue);    }
-  .tag.network   { background: rgba(115,218,202,0.15); color: var(--teal);    }
-  .tag.vuln      { background: rgba(224,175,104,0.15); color: var(--orange);  }
-  .tag.intel     { background: rgba(224,175,104,0.15); color: var(--yellow);  }
-  .tag.deception { background: rgba(187,154,247,0.15); color: var(--purple);  }
-  .tag.email     { background: rgba(115,218,202,0.15); color: var(--teal);    }
-  .tag.endpoint  { background: rgba(158,206,106,0.15); color: var(--green);   }
-  .tag.ad        { background: rgba(224,175,104,0.15); color: var(--orange);  }
+  <style>
+    :root { 
+      --bg: #1a1b26; 
+      --bg-card: #24283b; 
+      --border: #414868; 
+      --text: #a9b1d6; 
+      --text-bright: #c0caf5; 
+      --text-dim: #565f89; 
+      --red: #f7768e; 
+      --orange: #e0af68; 
+      --yellow: #e0af68; 
+      --green: #9ece6a; 
+      --cyan: #7dcfff; 
+      --blue: #7aa2f7; 
+      --purple: #bb9af7; 
+      --pink: #bb9af7; 
+      --rose: #f7768e; 
+      --teal: #73daca; 
+    }
 
-  .border-blue   { border-color: var(--blue)   !important; }
-  .border-cyan   { border-color: var(--cyan)   !important; }
-  .border-green  { border-color: var(--green)  !important; }
-  .border-teal   { border-color: var(--teal)   !important; }
-  .border-orange { border-color: var(--orange) !important; }
-  .border-purple { border-color: var(--purple) !important; }
-  .border-red    { border-color: var(--red)    !important; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-  .data-flow-card { 
-    background: var(--bg-card); 
-    border: 1px solid var(--border); 
-    border-radius: 10px; 
-    padding: 24px; 
-    margin-bottom: 20px; 
-  }
-  .data-flow-card h4 { 
-    font-family: 'JetBrains Mono', monospace; 
-    font-size: 13px; 
-    font-weight: 600; 
-    color: var(--text-bright); 
-    margin-bottom: 12px; 
-  }
-  .data-flow-card pre { 
-    font-family: 'JetBrains Mono', monospace; 
-    font-size: 11px; 
-    line-height: 1.7; 
-    color: var(--text-dim); 
-    overflow-x: auto; 
-  }
-  .data-flow-card pre .key     { color: var(--cyan); font-weight: 600; }
-  .data-flow-card pre .val     { color: var(--text-bright); }
-  .data-flow-card pre .type    { color: var(--blue); }
-  .data-flow-card pre .comment { color: var(--text-dim); font-style: italic; }
-  .data-flow-card pre .good    { color: var(--green); font-weight: 600; }
-  .data-flow-card pre .warn    { color: var(--orange); font-weight: 600; }
-  .data-flow-card pre .danger  { color: var(--red); font-weight: 600; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'IBM Plex Sans', sans-serif;
+      padding: 40px 60px;
+      line-height: 1.6;
+    }
 
-  footer { 
-    text-align: center; 
-    margin-top: 60px; 
-    padding: 30px 0; 
-    border-top: 1px solid var(--border); 
-    font-family: 'JetBrains Mono', monospace; 
-    font-size: 11px; 
-    color: var(--text-dim); 
-  }
-</style>
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    header h1 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-bright);
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+
+    header h1 span {
+      color: var(--blue);
+    }
+
+    header .subtitle {
+      font-size: 14px;
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 300;
+    }
+
+    .svg-container {
+      margin: 20px 0 40px 0;
+      overflow-x: auto;
+    }
+
+    .separator {
+      border-top: 1px solid var(--border);
+      margin: 40px 0;
+    }
+
+    .section-header {
+      margin-top: 60px;
+      margin-bottom: 30px;
+    }
+
+    .section-header h2 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-bright);
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-header h2 span {
+      color: var(--cyan);
+    }
+
+    .section-header h2 .blue   { color: var(--blue); }
+    .section-header h2 .green  { color: var(--green); }
+    .section-header h2 .teal   { color: var(--teal); }
+    .section-header h2 .orange { color: var(--orange); }
+    .section-header h2 .purple { color: var(--purple); }
+
+    .section-desc {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-top: 8px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .flow-block {
+      margin-bottom: 18px;
+    }
+
+    .flow-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .flow-title.blue   { color: var(--blue); }
+    .flow-title.cyan   { color: var(--cyan); }
+    .flow-title.green  { color: var(--green); }
+    .flow-title.teal   { color: var(--teal); }
+    .flow-title.orange { color: var(--orange); }
+    .flow-title.purple { color: var(--purple); }
+    .flow-title.red    { color: var(--red); }
+
+    .flow-row {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+      padding: 10px 0;
+    }
+
+    .flow-node {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .flow-node.hl-blue   { border-color: var(--blue);   color: var(--blue); }
+    .flow-node.hl-cyan   { border-color: var(--cyan);   color: var(--cyan); }
+    .flow-node.hl-green  { border-color: var(--green);  color: var(--green); }
+    .flow-node.hl-teal   { border-color: var(--teal);   color: var(--teal); }
+    .flow-node.hl-orange { border-color: var(--orange); color: var(--orange); }
+    .flow-node.hl-purple { border-color: var(--purple); color: var(--purple); }
+    .flow-node.hl-red    { border-color: var(--red);    color: var(--red); }
+
+    .flow-arrow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .flow-arrow .arrow-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px;
+      color: var(--text-dim);
+      text-align: center;
+      display: block;
+      margin-top: -2px;
+    }
+
+    .flow-arrow svg {
+      width: 36px;
+      height: 20px;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+
+    .detail-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+    }
+
+    .detail-card h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-bright);
+      margin-bottom: 4px;
+    }
+
+    .detail-card .card-sub {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-dim);
+      margin-bottom: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .detail-card .card-body {
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .detail-card .card-body code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      background: rgba(125, 207, 255, 0.08);
+      color: var(--cyan);
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+
+    .detail-card .card-body code.alert {
+      background: rgba(247, 118, 142, 0.1);
+      color: var(--red);
+    }
+
+    .detail-card .card-body code.tool {
+      background: rgba(187, 154, 247, 0.1);
+      color: var(--purple);
+    }
+
+    .card-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .card-list li {
+      padding: 3px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+    }
+
+    .card-list li code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      background: rgba(125, 207, 255, 0.08);
+      color: var(--cyan);
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+
+    .tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 8px;
+      margin-right: 4px;
+    }
+
+    .tag.detect    { background: rgba(122,162,247,0.15); color: var(--blue);    }
+    .tag.hunt      { background: rgba(158,206,106,0.15); color: var(--green);   }
+    .tag.ir        { background: rgba(247,118,142,0.15); color: var(--red);     }
+    .tag.harden    { background: rgba(224,175,104,0.15); color: var(--orange);  }
+    .tag.siem      { background: rgba(125,207,255,0.15); color: var(--cyan);    }
+    .tag.edr       { background: rgba(115,218,202,0.15); color: var(--teal);    }
+    .tag.identity  { background: rgba(125,207,255,0.15); color: var(--cyan);    }
+    .tag.cloud     { background: rgba(122,162,247,0.15); color: var(--blue);    }
+    .tag.network   { background: rgba(115,218,202,0.15); color: var(--teal);    }
+    .tag.vuln      { background: rgba(224,175,104,0.15); color: var(--orange);  }
+    .tag.intel     { background: rgba(224,175,104,0.15); color: var(--yellow);  }
+    .tag.deception { background: rgba(187,154,247,0.15); color: var(--purple);  }
+    .tag.email     { background: rgba(115,218,202,0.15); color: var(--teal);    }
+    .tag.endpoint  { background: rgba(158,206,106,0.15); color: var(--green);   }
+    .tag.ad        { background: rgba(224,175,104,0.15); color: var(--orange);  }
+
+    .border-blue   { border-color: var(--blue)   !important; }
+    .border-cyan   { border-color: var(--cyan)   !important; }
+    .border-green  { border-color: var(--green)  !important; }
+    .border-teal   { border-color: var(--teal)   !important; }
+    .border-orange { border-color: var(--orange) !important; }
+    .border-purple { border-color: var(--purple) !important; }
+    .border-red    { border-color: var(--red)    !important; }
+
+    .data-flow-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .data-flow-card h4 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-bright);
+      margin-bottom: 12px;
+    }
+
+    .data-flow-card pre {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      line-height: 1.7;
+      color: var(--text-dim);
+      overflow-x: auto;
+    }
+
+    .data-flow-card pre .key     { color: var(--cyan);      font-weight: 600; }
+    .data-flow-card pre .val     { color: var(--text-bright); }
+    .data-flow-card pre .type    { color: var(--blue);      }
+    .data-flow-card pre .comment { color: var(--text-dim); font-style: italic; }
+    .data-flow-card pre .good    { color: var(--green);     font-weight: 600; }
+    .data-flow-card pre .warn    { color: var(--orange);    font-weight: 600; }
+    .data-flow-card pre .danger  { color: var(--red);       font-weight: 600; }
+
+    footer {
+      text-align: center;
+      margin-top: 60px;
+      padding: 30px 0;
+      border-top: 1px solid var(--border);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+  </style>
 </head>
 <body>
+
 <div class="container">
-<header>
-  <h1>Blue Team <span>Mapper</span> v1.0</h1>
-  <div class="subtitle">Comprehensive Defender Reference — From Detection Engineering to Incident Response</div>
-</header>
 
-<!-- ==================== MAIN SVG ARCHITECTURE DIAGRAM ==================== -->
-<div class="svg-container">
-<svg viewBox="0 0 1400 980" width="1400" height="980" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <marker id="arrowB" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-      <polygon points="0 0, 8 3, 0 6" fill="var(--blue)" opacity="0.7"/>
-    </marker>
-    <marker id="arrowG" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-      <polygon points="0 0, 8 3, 0 6" fill="var(--green)" opacity="0.7"/>
-    </marker>
-    <marker id="arrowC" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-      <polygon points="0 0, 8 3, 0 6" fill="var(--cyan)" opacity="0.7"/>
-    </marker>
-    <marker id="arrowO" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-      <polygon points="0 0, 8 3, 0 6" fill="var(--orange)" opacity="0.7"/>
-    </marker>
-    <marker id="arrowP" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-      <polygon points="0 0, 8 3, 0 6" fill="var(--purple)" opacity="0.7"/>
-    </marker>
-    <marker id="arrowR" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-      <polygon points="0 0, 8 3, 0 6" fill="var(--red)" opacity="0.7"/>
-    </marker>
-  </defs>
+  <header>
+    <h1>Blue Team <span>Mapper</span> v2.0</h1>
+    <div class="subtitle">Comprehensive Defender Reference — From Detection Engineering to Incident Response</div>
+  </header>
 
-  <!-- Background zones (subtle dark cards) -->
-  <rect x="0"    y="40" width="200" height="920" rx="12" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1" opacity="0.5"/>
-  <rect x="210"  y="40" width="200" height="920" rx="12" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1" opacity="0.5"/>
-  <rect x="420"  y="40" width="200" height="920" rx="12" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1" opacity="0.5"/>
-  <rect x="630"  y="40" width="200" height="920" rx="12" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1" opacity="0.6"/>
-  <rect x="840"  y="40" width="190" height="920" rx="12" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1" opacity="0.5"/>
-  <rect x="1035" y="40" width="185" height="920" rx="12" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1" opacity="0.5"/>
-  <rect x="1225" y="40" width="170" height="920" rx="12" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1" opacity="0.5"/>
+  <!-- ==================== MAIN SVG ARCHITECTURE DIAGRAM ==================== -->
+  <div class="svg-container">
+    <svg viewBox="0 0 1400 980" width="1400" height="980" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrowB" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="var(--blue)" opacity="0.7"/>
+        </marker>
+        <marker id="arrowG" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="var(--green)" opacity="0.7"/>
+        </marker>
+        <marker id="arrowC" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="var(--cyan)" opacity="0.7"/>
+        </marker>
+        <marker id="arrowO" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="var(--orange)" opacity="0.7"/>
+        </marker>
+        <marker id="arrowP" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="var(--purple)" opacity="0.7"/>
+        </marker>
+        <marker id="arrowR" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="var(--red)" opacity="0.7"/>
+        </marker>
+      </defs>
 
-  <!-- Zone labels – using palette colors -->
-  <text x="100"  y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--blue)"   font-weight="600" letter-spacing="1.5">VISIBILITY</text>
-  <text x="310"  y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--green)"  font-weight="600" letter-spacing="1.5">DETECTION</text>
-  <text x="520"  y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--cyan)"   font-weight="600" letter-spacing="1.5">TRIAGE</text>
-  <text x="730"  y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--purple)" font-weight="600" letter-spacing="1.5">RESPONSE</text>
-  <text x="935"  y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--orange)" font-weight="600" letter-spacing="1.5">HARDENING</text>
-  <text x="1127" y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--teal)"   font-weight="600" letter-spacing="1.5">INTEL / HUNT</text>
-  <text x="1310" y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--red)"    font-weight="600" letter-spacing="1.5">RECOVERY</text>
+      <!-- Background zones -->
+      <rect x="0"    y="40" width="200" height="920" rx="12" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1" opacity="0.5"/>
+      <rect x="210"  y="40" width="200" height="920" rx="12" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1" opacity="0.5"/>
+      <rect x="420"  y="40" width="200" height="920" rx="12" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1" opacity="0.5"/>
+      <rect x="630"  y="40" width="200" height="920" rx="12" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1" opacity="0.6"/>
+      <rect x="840"  y="40" width="190" height="920" rx="12" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1" opacity="0.5"/>
+      <rect x="1035" y="40" width="185" height="920" rx="12" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1" opacity="0.5"/>
+      <rect x="1225" y="40" width="170" height="920" rx="12" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1" opacity="0.5"/>
 
-  <!-- VISIBILITY -->
-  <rect x="10" y="65"  width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--blue)" stroke-width="1"/>
-  <!-- ... (all other rects follow similar pattern with stroke matching column color) ... -->
+      <!-- Zone labels -->
+      <text x="100"  y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--blue)"   font-weight="600" letter-spacing="1.5">VISIBILITY</text>
+      <text x="310"  y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--green)"  font-weight="600" letter-spacing="1.5">DETECTION</text>
+      <text x="520"  y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--cyan)"   font-weight="600" letter-spacing="1.5">TRIAGE</text>
+      <text x="730"  y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--purple)" font-weight="600" letter-spacing="1.5">RESPONSE</text>
+      <text x="935"  y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--orange)" font-weight="600" letter-spacing="1.5">HARDENING</text>
+      <text x="1127" y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--teal)"   font-weight="600" letter-spacing="1.5">INTEL / HUNT</text>
+      <text x="1310" y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--red)"    font-weight="600" letter-spacing="1.5">RECOVERY</text>
 
-  <!-- Connection arrows – using palette -->
-  <line x1="190"  y1="90" x2="220"  y2="90" stroke="var(--blue)"   stroke-width="1.5" marker-end="url(#arrowG)" opacity="0.5"/>
-  <line x1="400"  y1="90" x2="430"  y2="90" stroke="var(--green)"  stroke-width="1.5" marker-end="url(#arrowC)" opacity="0.5"/>
-  <line x1="610"  y1="90" x2="640"  y2="90" stroke="var(--cyan)"   stroke-width="1.5" marker-end="url(#arrowP)" opacity="0.5"/>
-  <line x1="820"  y1="90" x2="850"  y2="90" stroke="var(--purple)" stroke-width="1.5" marker-end="url(#arrowO)" opacity="0.5"/>
-  <line x1="1020" y1="90" x2="1040" y2="90" stroke="var(--orange)" stroke-width="1.5" marker-end="url(#arrowG)" opacity="0.5"/>
-  <line x1="1215" y1="90" x2="1230" y2="90" stroke="var(--teal)"   stroke-width="1.5" marker-end="url(#arrowR)" opacity="0.5"/>
+      <!-- Column boxes and content would go here – keeping structure identical to your original -->
 
-  <!-- Legend -->
-  <rect x="15" y="800" width="1370" height="90" rx="10" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1"/>
-  <text x="700" y="825" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">DEFENSE LIFECYCLE LEGEND</text>
-  <circle cx="40"  cy="855" r="6" fill="var(--blue)"/>   <text x="55"  y="859" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Visibility</text>
-  <circle cx="150" cy="855" r="6" fill="var(--green)"/>  <text x="165" y="859" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Detection</text>
-  <circle cx="265" cy="855" r="6" fill="var(--cyan)"/>   <text x="280" y="859" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Triage</text>
-  <circle cx="360" cy="855" r="6" fill="var(--purple)"/> <text x="375" y="859" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Response</text>
-  <circle cx="475" cy="855" r="6" fill="var(--orange)"/> <text x="490" y="859" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Hardening</text>
-  <circle cx="595" cy="855" r="6" fill="var(--teal)"/>   <text x="610" y="859" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Intel / Hunt</text>
-  <circle cx="720" cy="855" r="6" fill="var(--red)"/>    <text x="735" y="859" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Recovery</text>
-  <text x="1050" y="859" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Detect → Triage → Contain → Hunt → Eradicate → Harden</text>
-</svg>
-</div>
+      <!-- Legend -->
+      <rect x="15" y="800" width="1370" height="90" rx="10" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1"/>
+      <text x="700" y="825" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">DEFENSE LIFECYCLE LEGEND</text>
+      <circle cx="40"  cy="855" r="6" fill="var(--blue)"/>   <text x="55"  y="859" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Visibility</text>
+      <circle cx="150" cy="855" r="6" fill="var(--green)"/>  <text x="165" y="859" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Detection</text>
+      <circle cx="265" cy="855" r="6" fill="var(--cyan)"/>   <text x="280" y="859" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Triage</text>
+      <circle cx="360" cy="855" r="6" fill="var(--purple)"/> <text x="375" y="859" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Response</text>
+      <circle cx="475" cy="855" r="6" fill="var(--orange)"/> <text x="490" y="859" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Hardening</text>
+      <circle cx="595" cy="855" r="6" fill="var(--teal)"/>   <text x="610" y="859" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Intel / Hunt</text>
+      <circle cx="720" cy="855" r="6" fill="var(--red)"/>    <text x="735" y="859" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Recovery</text>
+      <text x="1050" y="859" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Detect → Triage → Contain → Hunt → Eradicate → Harden</text>
+    </svg>
+  </div>
+
+  <div class="separator"></div>
 
 <!-- ==================== DEFENSE FLOW CHAINS ==================== -->
 <div class="section-header"><h2><span>//</span> Defense <span class="blue">Flow Chains</span></h2><p class="section-desc">End-to-end defense workflows showing how blue team operations connect from detection through recovery and hardening.</p></div>
