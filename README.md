@@ -10,26 +10,33 @@ A single-page, interactive defender dashboard mapping the full blue team lifecyc
 
 Built as a static HTML/CSS site using the beautiful **Tokyo Night** color palette.
 
-Live version:  
+**Live version:**  
 https://atraxsrc.github.io/BlueTeamMapper/
 
-## Features
+**Companion project:**  
+[Red Team Mapper](https://atraxsrc.github.io/RedTeamMapper/) — the offensive counterpart.
 
-- Clean, cyberpunk-inspired UI using Tokyo Night theme
+## Why This Exists
+Red vs Blue is most effective when both sides speak the same language.  
+This mapper flips the Red Team perspective into practical defensive controls, detection opportunities, hardening steps, and hunting queries — all in one clean visual reference.
+
+## Features
 - Full MITRE ATT&CK-aligned defense lifecycle diagram (SVG)
-- End-to-end workflow chains (phishing → ransomware → ADCS → credential attacks, etc.)
+- End-to-end workflow chains (phishing → detection → containment → recovery, ADCS abuse, credential attacks, ransomware, etc.)
 - Detailed sections covering:
-  - SIEM & log management
-  - EDR / endpoint detection
-  - Detection engineering (SIGMA, YARA, behavioral analytics)
-  - Incident response lifecycle & AD/cloud IR
-  - Threat hunting methodology & techniques
-  - Identity & access security
-  - Network security controls
-  - Hardening & vulnerability management
-  - Threat intelligence & deception
-  - Tool arsenal & key detection signatures
-- Responsive design, monospace typography, semantic color highlighting
+  - Infrastructure & SIEM/Log Management
+  - Access Controls & Identity Protection
+  - Endpoint Protection (EDR/XDR)
+  - Detection Engineering (Sigma, KQL, SPL, YARA)
+  - Containment & Incident Response
+  - Threat Hunting Methodology
+  - Network & Data Protection
+  - Cloud & AD Hardening
+  - macOS/Linux Defense
+  - AI Security Defense
+  - Full tool arsenal + critical Windows Event IDs & Sysmon references
+- Responsive design with monospace typography and semantic color highlighting
+- 100% static — loads instantly, no JS, no tracking
 
 ## Screenshots
 <img width="1753" height="1357" alt="Screenshot_2026-03-03_21-39-38" src="https://github.com/user-attachments/assets/3278b2a5-9c6f-4001-a395-a2d7fbee72fd" />
