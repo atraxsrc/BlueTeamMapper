@@ -341,173 +341,291 @@
     <div class="subtitle">Comprehensive Defender Reference — From Detection Engineering to Incident Response</div>
   </header>
 
-<!-- ==================== MAIN SVG ARCHITECTURE DIAGRAM ==================== -->
-<div class="svg-container">
-<svg viewBox="0 0 1400 980" width="1400" height="980" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <marker id="arrowB" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-      <polygon points="0 0, 8 3, 0 6" fill="var(--blue)" opacity="0.7"/>
-    </marker>
-    <marker id="arrowG" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-      <polygon points="0 0, 8 3, 0 6" fill="var(--green)" opacity="0.7"/>
-    </marker>
-    <marker id="arrowC" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-      <polygon points="0 0, 8 3, 0 6" fill="var(--cyan)" opacity="0.7"/>
-    </marker>
-    <marker id="arrowO" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-      <polygon points="0 0, 8 3, 0 6" fill="var(--orange)" opacity="0.7"/>
-    </marker>
-    <marker id="arrowP" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-      <polygon points="0 0, 8 3, 0 6" fill="var(--purple)" opacity="0.7"/>
-    </marker>
-    <marker id="arrowR" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-      <polygon points="0 0, 8 3, 0 6" fill="var(--red)" opacity="0.7"/>
-    </marker>
-  </defs>
+  <!-- ==================== MAIN SVG ARCHITECTURE DIAGRAM ==================== -->
+  <div class="svg-container">
+    <svg viewBox="0 0 1400 980" width="1400" height="980" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrowB" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="var(--blue)" opacity="0.7"/>
+        </marker>
+        <marker id="arrowG" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="var(--green)" opacity="0.7"/>
+        </marker>
+        <marker id="arrowC" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="var(--cyan)" opacity="0.7"/>
+        </marker>
+        <marker id="arrowO" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="var(--orange)" opacity="0.7"/>
+        </marker>
+        <marker id="arrowP" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="var(--purple)" opacity="0.7"/>
+        </marker>
+        <marker id="arrowT" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="var(--teal)" opacity="0.7"/>
+        </marker>
+        <marker id="arrowR" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="var(--red)" opacity="0.7"/>
+        </marker>
+      </defs>
 
-  <!-- Background zones – using Tokyo Night card/bg -->
-  <rect x="0"    y="40" width="200" height="920" rx="12" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1" opacity="0.5"/>
-  <rect x="210"  y="40" width="200" height="920" rx="12" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1" opacity="0.5"/>
-  <rect x="420"  y="40" width="200" height="920" rx="12" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1" opacity="0.5"/>
-  <rect x="630"  y="40" width="200" height="920" rx="12" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1" opacity="0.6"/>
-  <rect x="840"  y="40" width="190" height="920" rx="12" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1" opacity="0.5"/>
-  <rect x="1035" y="40" width="185" height="920" rx="12" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1" opacity="0.5"/>
-  <rect x="1225" y="40" width="170" height="920" rx="12" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1" opacity="0.5"/>
+      <!-- Background zones -->
+      <rect x="0"    y="40" width="200" height="920" rx="12" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1" opacity="0.5"/>
+      <rect x="210"  y="40" width="200" height="920" rx="12" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1" opacity="0.5"/>
+      <rect x="420"  y="40" width="200" height="920" rx="12" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1" opacity="0.5"/>
+      <rect x="630"  y="40" width="200" height="920" rx="12" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1" opacity="0.6"/>
+      <rect x="840"  y="40" width="190" height="920" rx="12" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1" opacity="0.5"/>
+      <rect x="1035" y="40" width="185" height="920" rx="12" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1" opacity="0.5"/>
+      <rect x="1225" y="40" width="170" height="920" rx="12" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1" opacity="0.5"/>
 
-  <!-- Zone labels – mapped to your palette -->
-  <text x="100"  y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--blue)"   font-weight="600" letter-spacing="1.5">VISIBILITY</text>
-  <text x="310"  y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--green)"  font-weight="600" letter-spacing="1.5">DETECTION</text>
-  <text x="520"  y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--cyan)"   font-weight="600" letter-spacing="1.5">TRIAGE</text>
-  <text x="730"  y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--purple)" font-weight="600" letter-spacing="1.5">RESPONSE</text>
-  <text x="935"  y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--orange)" font-weight="600" letter-spacing="1.5">HARDENING</text>
-  <text x="1127" y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--teal)"   font-weight="600" letter-spacing="1.5">INTEL / HUNT</text>
-  <text x="1310" y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--red)"    font-weight="600" letter-spacing="1.5">RECOVERY</text>
+      <!-- Zone labels -->
+      <text x="100"  y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--blue)"   font-weight="600" letter-spacing="1.5">VISIBILITY</text>
+      <text x="310"  y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--green)"  font-weight="600" letter-spacing="1.5">DETECTION</text>
+      <text x="520"  y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--cyan)"   font-weight="600" letter-spacing="1.5">TRIAGE</text>
+      <text x="730"  y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--purple)" font-weight="600" letter-spacing="1.5">RESPONSE</text>
+      <text x="935"  y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--orange)" font-weight="600" letter-spacing="1.5">HARDENING</text>
+      <text x="1127" y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--teal)"   font-weight="600" letter-spacing="1.5">INTEL / HUNT</text>
+      <text x="1310" y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--red)"    font-weight="600" letter-spacing="1.5">RECOVERY</text>
 
-  <!-- VISIBILITY column -->
-  <rect x="10" y="65" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--blue)" stroke-width="1"/>
-  <text x="100" y="86" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">SIEM / Log Agg</text>
-  <text x="100" y="103" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Splunk &bull; Elastic &bull; Sentinel</text>
+      <!-- VISIBILITY column -->
+      <rect x="10" y="65" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--blue)" stroke-width="1"/>
+      <text x="100" y="86" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">SIEM / Log Agg</text>
+      <text x="100" y="103" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Splunk &bull; Elastic &bull; Sentinel</text>
 
-  <rect x="10" y="130" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--blue)" stroke-width="1"/>
-  <text x="100" y="151" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">EDR / XDR</text>
-  <text x="100" y="168" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">CrowdStrike &bull; Defender &bull; SentinelOne</text>
+      <rect x="10" y="130" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--blue)" stroke-width="1"/>
+      <text x="100" y="151" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">EDR / XDR</text>
+      <text x="100" y="168" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">CrowdStrike &bull; Defender &bull; SentinelOne</text>
 
-  <rect x="10" y="195" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--blue)" stroke-width="1"/>
-  <text x="100" y="216" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Network Monitoring</text>
-  <text x="100" y="233" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Zeek &bull; Suricata &bull; Arkime</text>
+      <rect x="10" y="195" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--blue)" stroke-width="1"/>
+      <text x="100" y="216" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Network Monitoring</text>
+      <text x="100" y="233" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Zeek &bull; Suricata &bull; Arkime</text>
 
-  <rect x="10" y="260" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--blue)" stroke-width="1"/>
-  <text x="100" y="281" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Identity / Auth Logs</text>
-  <text x="100" y="298" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">AD &bull; Entra &bull; Okta &bull; ADFS</text>
+      <rect x="10" y="260" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--blue)" stroke-width="1"/>
+      <text x="100" y="281" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Identity / Auth Logs</text>
+      <text x="100" y="298" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">AD &bull; Entra &bull; Okta &bull; ADFS</text>
 
-  <rect x="10" y="325" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--blue)" stroke-width="1"/>
-  <text x="100" y="346" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Cloud Telemetry</text>
-  <text x="100" y="363" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">CloudTrail &bull; Defender &bull; GCP</text>
+      <rect x="10" y="325" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--blue)" stroke-width="1"/>
+      <text x="100" y="346" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Cloud Telemetry</text>
+      <text x="100" y="363" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">CloudTrail &bull; Defender &bull; GCP</text>
 
-  <rect x="10" y="390" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--blue)" stroke-width="1"/>
-  <text x="100" y="411" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Email Security</text>
-  <text x="100" y="428" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Defender &bull; Proofpoint &bull; SEG</text>
+      <rect x="10" y="390" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--blue)" stroke-width="1"/>
+      <text x="100" y="411" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Email Security</text>
+      <text x="100" y="428" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Defender &bull; Proofpoint &bull; SEG</text>
 
-  <rect x="10" y="455" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--blue)" stroke-width="1"/>
-  <text x="100" y="476" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Honeypots / Deception</text>
-  <text x="100" y="493" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Canary &bull; Labyrinth &bull; HoneyAD</text>
+      <rect x="10" y="455" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--blue)" stroke-width="1"/>
+      <text x="100" y="476" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Honeypots / Deception</text>
+      <text x="100" y="493" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Canary &bull; Labyrinth &bull; HoneyAD</text>
 
-  <rect x="10" y="520" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--blue)" stroke-width="1"/>
-  <text x="100" y="541" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">DNS / Proxy Logs</text>
-  <text x="100" y="558" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Umbrella &bull; ZScaler &bull; BlueCoat</text>
+      <rect x="10" y="520" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--blue)" stroke-width="1"/>
+      <text x="100" y="541" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">DNS / Proxy Logs</text>
+      <text x="100" y="558" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Umbrella &bull; ZScaler &bull; BlueCoat</text>
 
-  <!-- DETECTION column -->
-  <rect x="220" y="65" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--green)" stroke-width="1"/>
-  <text x="310" y="86" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">SIGMA Rules</text>
-  <text x="310" y="103" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Generic detection rules</text>
+      <!-- DETECTION column -->
+      <rect x="220" y="65" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--green)" stroke-width="1"/>
+      <text x="310" y="86" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">SIGMA Rules</text>
+      <text x="310" y="103" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Generic detection rules</text>
 
-  <rect x="220" y="130" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--green)" stroke-width="1"/>
-  <text x="310" y="151" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">YARA Rules</text>
-  <text x="310" y="168" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">File &amp; memory pattern matching</text>
+      <rect x="220" y="130" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--green)" stroke-width="1"/>
+      <text x="310" y="151" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">YARA Rules</text>
+      <text x="310" y="168" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">File &amp; memory pattern matching</text>
 
-  <rect x="220" y="195" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--green)" stroke-width="1"/>
-  <text x="310" y="216" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Behavioral Analytics</text>
-  <text x="310" y="233" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">UEBA &bull; ML baselines</text>
+      <rect x="220" y="195" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--green)" stroke-width="1"/>
+      <text x="310" y="216" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Behavioral Analytics</text>
+      <text x="310" y="233" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">UEBA &bull; ML baselines</text>
 
-  <rect x="220" y="260" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--green)" stroke-width="1"/>
-  <text x="310" y="281" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">IOC / IOA Matching</text>
-  <text x="310" y="298" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Hashes &bull; IPs &bull; Domains &bull; URLs</text>
+      <rect x="220" y="260" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--green)" stroke-width="1"/>
+      <text x="310" y="281" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">IOC / IOA Matching</text>
+      <text x="310" y="298" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Hashes &bull; IPs &bull; Domains &bull; URLs</text>
 
-  <rect x="220" y="325" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--green)" stroke-width="1"/>
-  <text x="310" y="346" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Threat Intelligence</text>
-  <text x="310" y="363" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">MISP &bull; OpenCTI &bull; VirusTotal</text>
+      <rect x="220" y="325" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--green)" stroke-width="1"/>
+      <text x="310" y="346" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Threat Intelligence</text>
+      <text x="310" y="363" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">MISP &bull; OpenCTI &bull; VirusTotal</text>
 
-  <rect x="220" y="390" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--green)" stroke-width="1"/>
-  <text x="310" y="411" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Detection Engineering</text>
-  <text x="310" y="428" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">ATT&amp;CK coverage &bull; Gaps</text>
+      <rect x="220" y="390" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--green)" stroke-width="1"/>
+      <text x="310" y="411" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Detection Engineering</text>
+      <text x="310" y="428" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">ATT&amp;CK coverage &bull; Gaps</text>
 
-  <rect x="220" y="455" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--green)" stroke-width="1"/>
-  <text x="310" y="476" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Anomaly Detection</text>
-  <text x="310" y="493" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Outlier analysis &bull; baselines</text>
+      <rect x="220" y="455" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--green)" stroke-width="1"/>
+      <text x="310" y="476" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Anomaly Detection</text>
+      <text x="310" y="493" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Outlier analysis &bull; baselines</text>
 
-  <rect x="220" y="520" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--green)" stroke-width="1"/>
-  <text x="310" y="541" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Alert Correlation</text>
-  <text x="310" y="558" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">SOAR &bull; playbooks &bull; enrichment</text>
+      <rect x="220" y="520" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--green)" stroke-width="1"/>
+      <text x="310" y="541" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Alert Correlation</text>
+      <text x="310" y="558" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">SOAR &bull; playbooks &bull; enrichment</text>
 
-  <!-- TRIAGE column -->
-  <rect x="430" y="65" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--cyan)" stroke-width="1"/>
-  <text x="520" y="86" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Alert Validation</text>
-  <text x="520" y="103" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">True positive vs. noise</text>
+      <!-- TRIAGE column -->
+      <rect x="430" y="65" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--cyan)" stroke-width="1"/>
+      <text x="520" y="86" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Alert Validation</text>
+      <text x="520" y="103" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">True positive vs. noise</text>
 
-  <rect x="430" y="130" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--cyan)" stroke-width="1"/>
-  <text x="520" y="151" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">IOC Enrichment</text>
-  <text x="520" y="168" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">VT &bull; Shodan &bull; PassiveDNS</text>
+      <rect x="430" y="130" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--cyan)" stroke-width="1"/>
+      <text x="520" y="151" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">IOC Enrichment</text>
+      <text x="520" y="168" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">VT &bull; Shodan &bull; PassiveDNS</text>
 
-  <rect x="430" y="195" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--cyan)" stroke-width="1"/>
-  <text x="520" y="216" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Log Correlation</text>
-  <text x="520" y="233" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Timeline &bull; pivot &bull; context</text>
+      <rect x="430" y="195" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--cyan)" stroke-width="1"/>
+      <text x="520" y="216" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Log Correlation</text>
+      <text x="520" y="233" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Timeline &bull; pivot &bull; context</text>
 
-  <rect x="430" y="260" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--cyan)" stroke-width="1"/>
-  <text x="520" y="281" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Severity Scoring</text>
-  <text x="520" y="298" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">CVSS &bull; MITRE &bull; blast radius</text>
+      <rect x="430" y="260" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--cyan)" stroke-width="1"/>
+      <text x="520" y="281" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Severity Scoring</text>
+      <text x="520" y="298" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">CVSS &bull; MITRE &bull; blast radius</text>
 
-  <rect x="430" y="325" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--cyan)" stroke-width="1"/>
-  <text x="520" y="346" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Process Tree Analysis</text>
-  <text x="520" y="363" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Parent-child relationships</text>
+      <rect x="430" y="325" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--cyan)" stroke-width="1"/>
+      <text x="520" y="346" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Process Tree Analysis</text>
+      <text x="520" y="363" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Parent-child relationships</text>
 
-  <rect x="430" y="390" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--cyan)" stroke-width="1"/>
-  <text x="520" y="411" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Memory Analysis</text>
-  <text x="520" y="428" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Volatility &bull; injections &bull; hooks</text>
+      <rect x="430" y="390" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--cyan)" stroke-width="1"/>
+      <text x="520" y="411" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Memory Analysis</text>
+      <text x="520" y="428" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Volatility &bull; injections &bull; hooks</text>
 
-  <rect x="430" y="455" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--cyan)" stroke-width="1"/>
-  <text x="520" y="476" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Network Forensics</text>
-  <text x="520" y="493" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Wireshark &bull; PCAP &bull; NetFlow</text>
+      <rect x="430" y="455" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--cyan)" stroke-width="1"/>
+      <text x="520" y="476" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Network Forensics</text>
+      <text x="520" y="493" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Wireshark &bull; PCAP &bull; NetFlow</text>
 
-  <!-- RESPONSE column -->
-  <rect x="640" y="65" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--purple)" stroke-width="1"/>
-  <text x="730" y="86" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Containment</text>
-  <text x="730" y="103" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Isolate &bull; block &bull; segment</text>
+      <!-- RESPONSE column -->
+      <rect x="640" y="65" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--purple)" stroke-width="1"/>
+      <text x="730" y="86" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Containment</text>
+      <text x="730" y="103" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Isolate &bull; block &bull; segment</text>
 
-  <!-- (continue similarly for all other rect/text in RESPONSE, HARDENING, INTEL/HUNT, RECOVERY columns – pattern is identical) -->
+      <rect x="640" y="130" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--purple)" stroke-width="1"/>
+      <text x="730" y="151" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Account Remediation</text>
+      <text x="730" y="168" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Reset &bull; disable &bull; revoke tokens</text>
 
-  <!-- Connection arrows – using your palette -->
-  <line x1="190" y1="90" x2="220" y2="90" stroke="var(--blue)" stroke-width="1.5" marker-end="url(#arrowG)" opacity="0.5"/>
-  <line x1="400" y1="90" x2="430" y2="90" stroke="var(--green)" stroke-width="1.5" marker-end="url(#arrowC)" opacity="0.5"/>
-  <line x1="610" y1="90" x2="640" y2="90" stroke="var(--cyan)" stroke-width="1.5" marker-end="url(#arrowP)" opacity="0.5"/>
-  <line x1="820" y1="90" x2="850" y2="90" stroke="var(--purple)" stroke-width="1.5" marker-end="url(#arrowO)" opacity="0.5"/>
-  <line x1="1020" y1="90" x2="1040" y2="90" stroke="var(--orange)" stroke-width="1.5" marker-end="url(#arrowG)" opacity="0.5"/>
-  <line x1="1215" y1="90" x2="1230" y2="90" stroke="var(--teal)" stroke-width="1.5" marker-end="url(#arrowR)" opacity="0.5"/>
+      <rect x="640" y="195" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--purple)" stroke-width="1"/>
+      <text x="730" y="216" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Malware Removal</text>
+      <text x="730" y="233" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Kill &bull; delete &bull; quarantine</text>
 
-  <!-- Legend – using palette -->
-  <rect x="15" y="800" width="1370" height="90" rx="10" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1"/>
-  <text x="700" y="825" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">DEFENSE LIFECYCLE LEGEND</text>
+      <rect x="640" y="260" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--purple)" stroke-width="1"/>
+      <text x="730" y="281" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Persistence Removal</text>
+      <text x="730" y="298" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Sched tasks &bull; reg keys &bull; svcs</text>
 
-  <circle cx="40"  cy="855" r="6" fill="var(--blue)"/>   <text x="55"  y="859" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Visibility</text>
-  <circle cx="150" cy="855" r="6" fill="var(--green)"/>  <text x="165" y="859" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Detection</text>
-  <circle cx="265" cy="855" r="6" fill="var(--cyan)"/>   <text x="280" y="859" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Triage</text>
-  <circle cx="360" cy="855" r="6" fill="var(--purple)"/> <text x="375" y="859" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Response</text>
-  <circle cx="475" cy="855" r="6" fill="var(--orange)"/> <text x="490" y="859" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Hardening</text>
-  <circle cx="595" cy="855" r="6" fill="var(--teal)"/>   <text x="610" y="859" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Intel / Hunt</text>
-  <circle cx="720" cy="855" r="6" fill="var(--red)"/>    <text x="735" y="859" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Recovery</text>
+      <rect x="640" y="325" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--purple)" stroke-width="1"/>
+      <text x="730" y="346" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Evidence Collection</text>
+      <text x="730" y="363" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Memory &bull; disk &bull; logs &bull; PCAP</text>
 
-  <text x="1050" y="859" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Detect &rarr; Triage &rarr; Contain &rarr; Hunt &rarr; Eradicate &rarr; Harden</text>
-</svg>
-</div>
+      <rect x="640" y="390" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--purple)" stroke-width="1"/>
+      <text x="730" y="411" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Threat Hunting</text>
+      <text x="730" y="428" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Hypothesis &bull; pivot &bull; validate</text>
+
+      <rect x="640" y="455" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--purple)" stroke-width="1"/>
+      <text x="730" y="476" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Scoping / Blast Radius</text>
+      <text x="730" y="493" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Lateral reach &bull; data touched</text>
+
+      <rect x="640" y="520" width="180" height="50" rx="8" fill="var(--bg-card)" stroke="var(--purple)" stroke-width="1"/>
+      <text x="730" y="541" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">SOAR Automation</text>
+      <text x="730" y="558" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Playbook &bull; auto-remediation</text>
+
+      <!-- HARDENING column -->
+      <rect x="850" y="65" width="170" height="50" rx="8" fill="var(--bg-card)" stroke="var(--orange)" stroke-width="1"/>
+      <text x="935" y="86" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Patch Management</text>
+      <text x="935" y="103" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">WSUS &bull; SCCM &bull; Ansible</text>
+
+      <rect x="850" y="130" width="170" height="50" rx="8" fill="var(--bg-card)" stroke="var(--orange)" stroke-width="1"/>
+      <text x="935" y="151" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Attack Surface Reduction</text>
+      <text x="935" y="168" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">ASR rules &bull; disable LOLBins</text>
+
+      <rect x="850" y="195" width="170" height="50" rx="8" fill="var(--bg-card)" stroke="var(--orange)" stroke-width="1"/>
+      <text x="935" y="216" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Identity Hardening</text>
+      <text x="935" y="233" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">MFA &bull; PAM &bull; tiering</text>
+
+      <rect x="850" y="260" width="170" height="50" rx="8" fill="var(--bg-card)" stroke="var(--orange)" stroke-width="1"/>
+      <text x="935" y="281" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">AppLocker / WDAC</text>
+      <text x="935" y="298" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Allowlisting &bull; code integrity</text>
+
+      <rect x="850" y="325" width="170" height="50" rx="8" fill="var(--bg-card)" stroke="var(--orange)" stroke-width="1"/>
+      <text x="935" y="346" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Network Segmentation</text>
+      <text x="935" y="363" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">VLANs &bull; micro-seg &bull; firewall</text>
+
+      <rect x="850" y="390" width="170" height="50" rx="8" fill="var(--bg-card)" stroke="var(--orange)" stroke-width="1"/>
+      <text x="935" y="411" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Secure Baseline</text>
+      <text x="935" y="428" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">CIS benchmarks &bull; DISA STIGs</text>
+
+      <rect x="850" y="455" width="170" height="50" rx="8" fill="var(--bg-card)" stroke="var(--orange)" stroke-width="1"/>
+      <text x="935" y="476" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">AD / ADCS Hardening</text>
+      <text x="935" y="493" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Tier model &bull; ESC fixes &bull; PKI</text>
+
+      <rect x="850" y="520" width="170" height="50" rx="8" fill="var(--bg-card)" stroke="var(--orange)" stroke-width="1"/>
+      <text x="935" y="541" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Email Security</text>
+      <text x="935" y="558" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">SPF &bull; DKIM &bull; DMARC &bull; MDO</text>
+
+      <!-- INTEL / HUNT column -->
+      <rect x="1040" y="65" width="175" height="50" rx="8" fill="var(--bg-card)" stroke="var(--teal)" stroke-width="1"/>
+      <text x="1127" y="86" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Threat Intelligence</text>
+      <text x="1127" y="103" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="var(--text-dim)">STIX/TAXII &bull; feeds &bull; sharing</text>
+
+      <rect x="1040" y="130" width="175" height="50" rx="8" fill="var(--bg-card)" stroke="var(--teal)" stroke-width="1"/>
+      <text x="1127" y="151" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Actor Tracking</text>
+      <text x="1127" y="168" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="var(--text-dim)">TTPs &bull; campaigns &bull; personas</text>
+
+      <rect x="1040" y="195" width="175" height="50" rx="8" fill="var(--bg-card)" stroke="var(--teal)" stroke-width="1"/>
+      <text x="1127" y="216" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Hunt Hypotheses</text>
+      <text x="1127" y="233" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="var(--text-dim)">TTP-based &bull; anomaly-based</text>
+
+      <rect x="1040" y="260" width="175" height="50" rx="8" fill="var(--bg-card)" stroke="var(--teal)" stroke-width="1"/>
+      <text x="1127" y="281" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Malware Analysis</text>
+      <text x="1127" y="298" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="var(--text-dim)">Static &bull; dynamic &bull; sandbox</text>
+
+      <rect x="1040" y="325" width="175" height="50" rx="8" fill="var(--bg-card)" stroke="var(--teal)" stroke-width="1"/>
+      <text x="1127" y="346" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Dark Web Monitoring</text>
+      <text x="1127" y="363" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="var(--text-dim)">Credential leaks &bull; brand intel</text>
+
+      <rect x="1040" y="390" width="175" height="50" rx="8" fill="var(--bg-card)" stroke="var(--teal)" stroke-width="1"/>
+      <text x="1127" y="411" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Attack Simulation</text>
+      <text x="1127" y="428" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="var(--text-dim)">Atomic Red &bull; Caldera &bull; BAS</text>
+
+      <rect x="1040" y="455" width="175" height="50" rx="8" fill="var(--bg-card)" stroke="var(--teal)" stroke-width="1"/>
+      <text x="1127" y="476" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Vuln Management</text>
+      <text x="1127" y="493" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="var(--text-dim)">Nessus &bull; Qualys &bull; Rapid7</text>
+
+      <!-- RECOVERY column -->
+      <rect x="1230" y="65" width="160" height="50" rx="8" fill="var(--bg-card)" stroke="var(--red)" stroke-width="1"/>
+      <text x="1310" y="86" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Eradication</text>
+      <text x="1310" y="103" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="var(--text-dim)">Remove all persistence / implants</text>
+
+      <rect x="1230" y="130" width="160" height="50" rx="8" fill="var(--bg-card)" stroke="var(--red)" stroke-width="1"/>
+      <text x="1310" y="151" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">System Rebuild</text>
+      <text x="1310" y="168" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="var(--text-dim)">Reimage &bull; golden image</text>
+
+      <rect x="1230" y="195" width="160" height="50" rx="8" fill="var(--bg-card)" stroke="var(--red)" stroke-width="1"/>
+      <text x="1310" y="216" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Credential Reset</text>
+      <text x="1310" y="233" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="var(--text-dim)">All creds &bull; krbtgt &bull; DPAPI keys</text>
+
+      <rect x="1230" y="260" width="160" height="50" rx="8" fill="var(--bg-card)" stroke="var(--red)" stroke-width="1"/>
+      <text x="1310" y="281" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Post-IR Hardening</text>
+      <text x="1310" y="298" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="var(--text-dim)">Close attack paths found</text>
+
+      <rect x="1230" y="325" width="160" height="50" rx="8" fill="var(--bg-card)" stroke="var(--red)" stroke-width="1"/>
+      <text x="1310" y="346" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Lessons Learned</text>
+      <text x="1310" y="363" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="var(--text-dim)">RCA &bull; timeline &bull; gap analysis</text>
+
+      <rect x="1230" y="390" width="160" height="50" rx="8" fill="var(--bg-card)" stroke="var(--red)" stroke-width="1"/>
+      <text x="1310" y="411" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">Detection Updates</text>
+      <text x="1310" y="428" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="var(--text-dim)">New rules from findings</text>
+
+      <!-- Connection arrows – colors match the FROM column -->
+      <line x1="190"  y1="90" x2="220"  y2="90" stroke="var(--blue)"   stroke-width="1.5" marker-end="url(#arrowB)" opacity="0.5"/>
+      <line x1="400"  y1="90" x2="430"  y2="90" stroke="var(--green)"  stroke-width="1.5" marker-end="url(#arrowG)" opacity="0.5"/>
+      <line x1="610"  y1="90" x2="640"  y2="90" stroke="var(--cyan)"   stroke-width="1.5" marker-end="url(#arrowC)" opacity="0.5"/>
+      <line x1="820"  y1="90" x2="850"  y2="90" stroke="var(--purple)" stroke-width="1.5" marker-end="url(#arrowP)" opacity="0.5"/>
+      <line x1="1020" y1="90" x2="1040" y2="90" stroke="var(--orange)" stroke-width="1.5" marker-end="url(#arrowO)" opacity="0.5"/>
+      <line x1="1215" y1="90" x2="1230" y2="90" stroke="var(--teal)"   stroke-width="1.5" marker-end="url(#arrowT)" opacity="0.5"/>
+
+      <!-- Legend -->
+      <rect x="15" y="800" width="1370" height="90" rx="10" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1"/>
+      <text x="700" y="825" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--text-bright)" font-weight="600">DEFENSE LIFECYCLE LEGEND</text>
+
+      <circle cx="40"  cy="855" r="6" fill="var(--blue)"/>   <text x="55"  y="859" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Visibility</text>
+      <circle cx="150" cy="855" r="6" fill="var(--green)"/>  <text x="165" y="859" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Detection</text>
+      <circle cx="265" cy="855" r="6" fill="var(--cyan)"/>   <text x="280" y="859" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Triage</text>
+      <circle cx="360" cy="855" r="6" fill="var(--purple)"/> <text x="375" y="859" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Response</text>
+      <circle cx="475" cy="855" r="6" fill="var(--orange)"/> <text x="490" y="859" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Hardening</text>
+      <circle cx="595" cy="855" r="6" fill="var(--teal)"/>   <text x="610" y="859" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Intel / Hunt</text>
+      <circle cx="720" cy="855" r="6" fill="var(--red)"/>    <text x="735" y="859" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Recovery</text>
+
+      <text x="1050" y="859" font-family="JetBrains Mono" font-size="9" fill="var(--text-dim)">Detect &rarr; Triage &rarr; Contain &rarr; Hunt &rarr; Eradicate &rarr; Harden</text>
+    </svg>
+  </div>
+
+  <div class="separator"></div>
 
 <!-- ==================== DEFENSE FLOW CHAINS ==================== -->
 <div class="section-header"><h2><span>//</span> Defense <span class="blue">Flow Chains</span></h2><p class="section-desc">End-to-end defense workflows showing how blue team operations connect from detection through recovery and hardening.</p></div>
