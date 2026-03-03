@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blue Team Mapper v1.0</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg-card: #161b22;
+    --border: #30363d;
+    --text: #8b949e;
+    --text-bright: #e6edf3;
+    --text-dim: #484f58;
+    --blue: #58a6ff;
+    --cyan: #39d353;
+    --teal: #56d364;
+    --green: #3fb950;
+    --sky: #79c0ff;
+    --indigo: #a5d6ff;
+    --purple: #bc8cff;
+    --orange: #f0883e;
+    --yellow: #d29922;
+    --red: #f85149;
+    --pink: #ff7b72;
+    --lime: #7ee787;
+    --azure: #58a6ff;
+    --mint: #39d353;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; padding: 40px 60px; line-height: 1.6; }
+  .container { max-width: 1400px; margin: 0 auto; }
+  header { text-align: center; margin-bottom: 50px; }
+  header h1 { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; color: var(--text-bright); letter-spacing: -0.5px; margin-bottom: 8px; }
+  header h1 span { color: var(--blue); }
+  header h1 .acc2 { color: var(--cyan); }
+  header .subtitle { font-size: 14px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; font-weight: 300; }
+  .svg-container { margin: 20px 0 40px 0; overflow-x: auto; }
+  .separator { border-top: 1px solid var(--border); margin: 40px 0; }
+  .section-header { margin-top: 60px; margin-bottom: 30px; }
+  .section-header h2 { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 600; color: var(--text-bright); padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .section-header h2 span { color: var(--cyan); }
+  .section-header h2 .blue { color: var(--blue); }
+  .section-header h2 .green { color: var(--green); }
+  .section-header h2 .teal { color: var(--teal); }
+  .section-header h2 .orange { color: var(--orange); }
+  .section-header h2 .purple { color: var(--purple); }
+  .section-header h2 .sky { color: var(--sky); }
+  .section-header h2 .indigo { color: var(--indigo); }
+  .section-header h2 .lime { color: var(--lime); }
+  .section-header h2 .red { color: var(--red); }
+  .section-desc { font-size: 12px; color: var(--text-dim); margin-top: 8px; font-family: 'JetBrains Mono', monospace; }
+  .flow-block { margin-bottom: 18px; }
+  .flow-title { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600; margin-bottom: 10px; }
+  .flow-title.blue { color: var(--blue); } .flow-title.cyan { color: var(--cyan); } .flow-title.green { color: var(--green); } .flow-title.teal { color: var(--teal); } .flow-title.sky { color: var(--sky); } .flow-title.indigo { color: var(--indigo); } .flow-title.purple { color: var(--purple); } .flow-title.orange { color: var(--orange); } .flow-title.lime { color: var(--lime); } .flow-title.red { color: var(--red); }
+  .flow-row { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; padding: 10px 0; }
+  .flow-node { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text); white-space: nowrap; flex-shrink: 0; }
+  .flow-node.hl-blue { border-color: var(--blue); color: var(--blue); }
+  .flow-node.hl-cyan { border-color: var(--cyan); color: var(--cyan); }
+  .flow-node.hl-green { border-color: var(--green); color: var(--green); }
+  .flow-node.hl-teal { border-color: var(--teal); color: var(--teal); }
+  .flow-node.hl-sky { border-color: var(--sky); color: var(--sky); }
+  .flow-node.hl-indigo { border-color: var(--indigo); color: var(--indigo); }
+  .flow-node.hl-purple { border-color: var(--purple); color: var(--purple); }
+  .flow-node.hl-orange { border-color: var(--orange); color: var(--orange); }
+  .flow-node.hl-lime { border-color: var(--lime); color: var(--lime); }
+  .flow-node.hl-red { border-color: var(--red); color: var(--red); }
+  .flow-arrow { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+  .flow-arrow .arrow-label { font-family: 'JetBrains Mono', monospace; font-size: 8px; color: var(--text-dim); text-align: center; display: block; margin-top: -2px; }
+  .flow-arrow svg { width: 36px; height: 20px; }
+  .details-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 16px; margin-bottom: 30px; }
+  .detail-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
+  .detail-card h3 { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 600; color: var(--text-bright); margin-bottom: 4px; }
+  .detail-card .card-sub { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); margin-bottom: 12px; letter-spacing: 0.5px; }
+  .detail-card .card-body { font-size: 12px; line-height: 1.7; }
+  .detail-card .card-body code { font-family: 'JetBrains Mono', monospace; font-size: 10px; background: rgba(88,166,255,0.08); color: var(--sky); padding: 2px 6px; border-radius: 3px; }
+  .detail-card .card-body code.alert { background: rgba(248,81,73,0.1); color: var(--red); }
+  .detail-card .card-body code.tool { background: rgba(188,140,255,0.1); color: var(--purple); }
+  .card-list { list-style: none; padding: 0; }
+  .card-list li { padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
+  .card-list li code { font-family: 'JetBrains Mono', monospace; font-size: 10px; background: rgba(88,166,255,0.08); color: var(--sky); padding: 1px 5px; border-radius: 3px; }
+  .tag { font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; padding: 3px 8px; border-radius: 4px; display: inline-block; margin-bottom: 8px; margin-right: 4px; }
+  .tag.detect { background: rgba(88,166,255,0.15); color: var(--blue); }
+  .tag.hunt { background: rgba(57,211,83,0.15); color: var(--cyan); }
+  .tag.ir { background: rgba(248,81,73,0.15); color: var(--red); }
+  .tag.harden { background: rgba(188,140,255,0.15); color: var(--purple); }
+  .tag.siem { background: rgba(121,192,255,0.15); color: var(--sky); }
+  .tag.edr { background: rgba(63,185,80,0.15); color: var(--green); }
+  .tag.identity { background: rgba(165,214,255,0.15); color: var(--indigo); }
+  .tag.cloud { background: rgba(88,166,255,0.15); color: var(--azure); }
+  .tag.network { background: rgba(126,231,135,0.15); color: var(--lime); }
+  .tag.vuln { background: rgba(240,136,62,0.15); color: var(--orange); }
+  .tag.intel { background: rgba(210,153,34,0.15); color: var(--yellow); }
+  .tag.deception { background: rgba(255,123,114,0.15); color: var(--pink); }
+  .tag.forensics { background: rgba(188,140,255,0.15); color: var(--purple); }
+  .tag.email { background: rgba(57,211,83,0.15); color: var(--teal); }
+  .tag.endpoint { background: rgba(63,185,80,0.15); color: var(--green); }
+  .tag.ad { background: rgba(240,136,62,0.15); color: var(--orange); }
+  .border-blue { border-color: var(--blue) !important; }
+  .border-cyan { border-color: var(--cyan) !important; }
+  .border-green { border-color: var(--green) !important; }
+  .border-teal { border-color: var(--teal) !important; }
+  .border-sky { border-color: var(--sky) !important; }
+  .border-indigo { border-color: var(--indigo) !important; }
+  .border-purple { border-color: var(--purple) !important; }
+  .border-orange { border-color: var(--orange) !important; }
+  .border-lime { border-color: var(--lime) !important; }
+  .border-red { border-color: var(--red) !important; }
+  .data-flow-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 24px; margin-bottom: 20px; }
+  .data-flow-card h4 { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600; color: var(--text-bright); margin-bottom: 12px; }
+  .data-flow-card pre { font-family: 'JetBrains Mono', monospace; font-size: 11px; line-height: 1.7; color: var(--text-dim); overflow-x: auto; }
+  .data-flow-card pre .key { color: var(--sky); font-weight: 600; }
+  .data-flow-card pre .val { color: var(--text-bright); }
+  .data-flow-card pre .type { color: var(--blue); }
+  .data-flow-card pre .comment { color: #3d444d; font-style: italic; }
+  .data-flow-card pre .good { color: var(--green); font-weight: 600; }
+  .data-flow-card pre .warn { color: var(--orange); font-weight: 600; }
+  .data-flow-card pre .danger { color: var(--red); font-weight: 600; }
+  footer { text-align: center; margin-top: 60px; padding: 30px 0; border-top: 1px solid var(--border); font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<h1>Blue Team <span>Mapper</span> v1.0</h1>
+  <div class="subtitle">Comprehensive Defender Reference &mdash; From Detection Engineering to Incident Response</div>
+</header>
+
+<!-- ==================== MAIN SVG ARCHITECTURE DIAGRAM ==================== -->
+<div class="svg-container">
+<svg viewBox="0 0 1400 980" width="1400" height="980" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrowB" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#58a6ff" opacity="0.7"/></marker>
+    <marker id="arrowG" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#39d353" opacity="0.7"/></marker>
+    <marker id="arrowC" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#79c0ff" opacity="0.7"/></marker>
+    <marker id="arrowO" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#f0883e" opacity="0.7"/></marker>
+    <marker id="arrowP" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#bc8cff" opacity="0.7"/></marker>
+    <marker id="arrowR" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#f85149" opacity="0.7"/></marker>
+  </defs>
+  <!-- Background zones -->
+  <rect x="0" y="40" width="200" height="920" rx="12" fill="#161b22" stroke="#30363d" stroke-width="1" opacity="0.5"/>
+  <rect x="210" y="40" width="200" height="920" rx="12" fill="#161b22" stroke="#30363d" stroke-width="1" opacity="0.5"/>
+  <rect x="420" y="40" width="200" height="920" rx="12" fill="#161b22" stroke="#30363d" stroke-width="1" opacity="0.5"/>
+  <rect x="630" y="40" width="200" height="920" rx="12" fill="#161b22" stroke="#30363d" stroke-width="1" opacity="0.6"/>
+  <rect x="840" y="40" width="190" height="920" rx="12" fill="#161b22" stroke="#30363d" stroke-width="1" opacity="0.5"/>
+  <rect x="1035" y="40" width="185" height="920" rx="12" fill="#161b22" stroke="#30363d" stroke-width="1" opacity="0.5"/>
+  <rect x="1225" y="40" width="170" height="920" rx="12" fill="#161b22" stroke="#30363d" stroke-width="1" opacity="0.5"/>
+  <!-- Zone labels -->
+  <text x="100" y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#58a6ff" font-weight="600" letter-spacing="1.5">VISIBILITY</text>
+  <text x="310" y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#39d353" font-weight="600" letter-spacing="1.5">DETECTION</text>
+  <text x="520" y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#79c0ff" font-weight="600" letter-spacing="1.5">TRIAGE</text>
+  <text x="730" y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#bc8cff" font-weight="600" letter-spacing="1.5">RESPONSE</text>
+  <text x="935" y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#f0883e" font-weight="600" letter-spacing="1.5">HARDENING</text>
+  <text x="1127" y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#7ee787" font-weight="600" letter-spacing="1.5">INTEL / HUNT</text>
+  <text x="1310" y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#f85149" font-weight="600" letter-spacing="1.5">RECOVERY</text>
+
+  <!-- VISIBILITY column -->
+  <rect x="10" y="65" width="180" height="50" rx="8" fill="#161b22" stroke="#58a6ff" stroke-width="1"/>
+  <text x="100" y="86" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">SIEM / Log Agg</text>
+  <text x="100" y="103" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">Splunk &bull; Elastic &bull; Sentinel</text>
+  <rect x="10" y="130" width="180" height="50" rx="8" fill="#161b22" stroke="#58a6ff" stroke-width="1"/>
+  <text x="100" y="151" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">EDR / XDR</text>
+  <text x="100" y="168" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">CrowdStrike &bull; Defender &bull; SentinelOne</text>
+  <rect x="10" y="195" width="180" height="50" rx="8" fill="#161b22" stroke="#58a6ff" stroke-width="1"/>
+  <text x="100" y="216" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Network Monitoring</text>
+  <text x="100" y="233" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">Zeek &bull; Suricata &bull; Arkime</text>
+  <rect x="10" y="260" width="180" height="50" rx="8" fill="#161b22" stroke="#58a6ff" stroke-width="1"/>
+  <text x="100" y="281" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Identity / Auth Logs</text>
+  <text x="100" y="298" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">AD &bull; Entra &bull; Okta &bull; ADFS</text>
+  <rect x="10" y="325" width="180" height="50" rx="8" fill="#161b22" stroke="#58a6ff" stroke-width="1"/>
+  <text x="100" y="346" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Cloud Telemetry</text>
+  <text x="100" y="363" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">CloudTrail &bull; Defender &bull; GCP</text>
+  <rect x="10" y="390" width="180" height="50" rx="8" fill="#161b22" stroke="#58a6ff" stroke-width="1"/>
+  <text x="100" y="411" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Email Security</text>
+  <text x="100" y="428" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">Defender &bull; Proofpoint &bull; SEG</text>
+  <rect x="10" y="455" width="180" height="50" rx="8" fill="#161b22" stroke="#58a6ff" stroke-width="1"/>
+  <text x="100" y="476" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Honeypots / Deception</text>
+  <text x="100" y="493" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">Canary &bull; Labyrinth &bull; HoneyAD</text>
+  <rect x="10" y="520" width="180" height="50" rx="8" fill="#161b22" stroke="#58a6ff" stroke-width="1"/>
+  <text x="100" y="541" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">DNS / Proxy Logs</text>
+  <text x="100" y="558" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">Umbrella &bull; ZScaler &bull; BlueCoat</text>
+
+  <!-- DETECTION column -->
+  <rect x="220" y="65" width="180" height="50" rx="8" fill="#161b22" stroke="#39d353" stroke-width="1"/>
+  <text x="310" y="86" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">SIGMA Rules</text>
+  <text x="310" y="103" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">Generic detection rules</text>
+  <rect x="220" y="130" width="180" height="50" rx="8" fill="#161b22" stroke="#39d353" stroke-width="1"/>
+  <text x="310" y="151" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">YARA Rules</text>
+  <text x="310" y="168" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">File &amp; memory pattern matching</text>
+  <rect x="220" y="195" width="180" height="50" rx="8" fill="#161b22" stroke="#39d353" stroke-width="1"/>
+  <text x="310" y="216" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Behavioral Analytics</text>
+  <text x="310" y="233" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">UEBA &bull; ML baselines</text>
+  <rect x="220" y="260" width="180" height="50" rx="8" fill="#161b22" stroke="#39d353" stroke-width="1"/>
+  <text x="310" y="281" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">IOC / IOA Matching</text>
+  <text x="310" y="298" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">Hashes &bull; IPs &bull; Domains &bull; URLs</text>
+  <rect x="220" y="325" width="180" height="50" rx="8" fill="#161b22" stroke="#39d353" stroke-width="1"/>
+  <text x="310" y="346" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Threat Intelligence</text>
+  <text x="310" y="363" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">MISP &bull; OpenCTI &bull; VirusTotal</text>
+  <rect x="220" y="390" width="180" height="50" rx="8" fill="#161b22" stroke="#39d353" stroke-width="1"/>
+  <text x="310" y="411" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Detection Engineering</text>
+  <text x="310" y="428" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">ATT&amp;CK coverage &bull; Gaps</text>
+  <rect x="220" y="455" width="180" height="50" rx="8" fill="#161b22" stroke="#39d353" stroke-width="1"/>
+  <text x="310" y="476" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Anomaly Detection</text>
+  <text x="310" y="493" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">Outlier analysis &bull; baselines</text>
+  <rect x="220" y="520" width="180" height="50" rx="8" fill="#161b22" stroke="#39d353" stroke-width="1"/>
+  <text x="310" y="541" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Alert Correlation</text>
+  <text x="310" y="558" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">SOAR &bull; playbooks &bull; enrichment</text>
+
+  <!-- TRIAGE column -->
+  <rect x="430" y="65" width="180" height="50" rx="8" fill="#161b22" stroke="#79c0ff" stroke-width="1"/>
+  <text x="520" y="86" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Alert Validation</text>
+  <text x="520" y="103" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">True positive vs. noise</text>
+  <rect x="430" y="130" width="180" height="50" rx="8" fill="#161b22" stroke="#79c0ff" stroke-width="1"/>
+  <text x="520" y="151" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">IOC Enrichment</text>
+  <text x="520" y="168" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">VT &bull; Shodan &bull; PassiveDNS</text>
+  <rect x="430" y="195" width="180" height="50" rx="8" fill="#161b22" stroke="#79c0ff" stroke-width="1"/>
+  <text x="520" y="216" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Log Correlation</text>
+  <text x="520" y="233" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">Timeline &bull; pivot &bull; context</text>
+  <rect x="430" y="260" width="180" height="50" rx="8" fill="#161b22" stroke="#79c0ff" stroke-width="1"/>
+  <text x="520" y="281" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Severity Scoring</text>
+  <text x="520" y="298" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">CVSS &bull; MITRE &bull; blast radius</text>
+  <rect x="430" y="325" width="180" height="50" rx="8" fill="#161b22" stroke="#79c0ff" stroke-width="1"/>
+  <text x="520" y="346" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Process Tree Analysis</text>
+  <text x="520" y="363" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">Parent-child relationships</text>
+  <rect x="430" y="390" width="180" height="50" rx="8" fill="#161b22" stroke="#79c0ff" stroke-width="1"/>
+  <text x="520" y="411" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Memory Analysis</text>
+  <text x="520" y="428" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">Volatility &bull; injections &bull; hooks</text>
+  <rect x="430" y="455" width="180" height="50" rx="8" fill="#161b22" stroke="#79c0ff" stroke-width="1"/>
+  <text x="520" y="476" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Network Forensics</text>
+  <text x="520" y="493" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">Wireshark &bull; PCAP &bull; NetFlow</text>
+
+  <!-- RESPONSE column -->
+  <rect x="640" y="65" width="180" height="50" rx="8" fill="#161b22" stroke="#bc8cff" stroke-width="1"/>
+  <text x="730" y="86" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Containment</text>
+  <text x="730" y="103" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">Isolate &bull; block &bull; segment</text>
+  <rect x="640" y="130" width="180" height="50" rx="8" fill="#161b22" stroke="#bc8cff" stroke-width="1"/>
+  <text x="730" y="151" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Account Remediation</text>
+  <text x="730" y="168" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">Reset &bull; disable &bull; revoke tokens</text>
+  <rect x="640" y="195" width="180" height="50" rx="8" fill="#161b22" stroke="#bc8cff" stroke-width="1"/>
+  <text x="730" y="216" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Malware Removal</text>
+  <text x="730" y="233" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">Kill &bull; delete &bull; quarantine</text>
+  <rect x="640" y="260" width="180" height="50" rx="8" fill="#161b22" stroke="#bc8cff" stroke-width="1"/>
+  <text x="730" y="281" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Persistence Removal</text>
+  <text x="730" y="298" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">Sched tasks &bull; reg keys &bull; svcs</text>
+  <rect x="640" y="325" width="180" height="50" rx="8" fill="#161b22" stroke="#bc8cff" stroke-width="1"/>
+  <text x="730" y="346" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Evidence Collection</text>
+  <text x="730" y="363" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">Memory &bull; disk &bull; logs &bull; PCAP</text>
+  <rect x="640" y="390" width="180" height="50" rx="8" fill="#161b22" stroke="#bc8cff" stroke-width="1"/>
+  <text x="730" y="411" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Threat Hunting</text>
+  <text x="730" y="428" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">Hypothesis &bull; pivot &bull; validate</text>
+  <rect x="640" y="455" width="180" height="50" rx="8" fill="#161b22" stroke="#bc8cff" stroke-width="1"/>
+  <text x="730" y="476" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Scoping / Blast Radius</text>
+  <text x="730" y="493" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">Lateral reach &bull; data touched</text>
+  <rect x="640" y="520" width="180" height="50" rx="8" fill="#161b22" stroke="#bc8cff" stroke-width="1"/>
+  <text x="730" y="541" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">SOAR Automation</text>
+  <text x="730" y="558" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">Playbook &bull; auto-remediation</text>
+
+  <!-- HARDENING column -->
+  <rect x="850" y="65" width="170" height="50" rx="8" fill="#161b22" stroke="#f0883e" stroke-width="1"/>
+  <text x="935" y="86" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Patch Management</text>
+  <text x="935" y="103" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">WSUS &bull; SCCM &bull; Ansible</text>
+  <rect x="850" y="130" width="170" height="50" rx="8" fill="#161b22" stroke="#f0883e" stroke-width="1"/>
+  <text x="935" y="151" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Attack Surface Reduction</text>
+  <text x="935" y="168" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">ASR rules &bull; disable LOLBins</text>
+  <rect x="850" y="195" width="170" height="50" rx="8" fill="#161b22" stroke="#f0883e" stroke-width="1"/>
+  <text x="935" y="216" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Identity Hardening</text>
+  <text x="935" y="233" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">MFA &bull; PAM &bull; tiering</text>
+  <rect x="850" y="260" width="170" height="50" rx="8" fill="#161b22" stroke="#f0883e" stroke-width="1"/>
+  <text x="935" y="281" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">AppLocker / WDAC</text>
+  <text x="935" y="298" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">Allowlisting &bull; code integrity</text>
+  <rect x="850" y="325" width="170" height="50" rx="8" fill="#161b22" stroke="#f0883e" stroke-width="1"/>
+  <text x="935" y="346" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Network Segmentation</text>
+  <text x="935" y="363" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">VLANs &bull; micro-seg &bull; firewall</text>
+  <rect x="850" y="390" width="170" height="50" rx="8" fill="#161b22" stroke="#f0883e" stroke-width="1"/>
+  <text x="935" y="411" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Secure Baseline</text>
+  <text x="935" y="428" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">CIS benchmarks &bull; DISA STIGs</text>
+  <rect x="850" y="455" width="170" height="50" rx="8" fill="#161b22" stroke="#f0883e" stroke-width="1"/>
+  <text x="935" y="476" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">AD / ADCS Hardening</text>
+  <text x="935" y="493" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">Tier model &bull; ESC fixes &bull; PKI</text>
+  <rect x="850" y="520" width="170" height="50" rx="8" fill="#161b22" stroke="#f0883e" stroke-width="1"/>
+  <text x="935" y="541" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Email Security</text>
+  <text x="935" y="558" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#484f58">SPF &bull; DKIM &bull; DMARC &bull; MDO</text>
+
+  <!-- INTEL / HUNT column -->
+  <rect x="1040" y="65" width="175" height="50" rx="8" fill="#161b22" stroke="#7ee787" stroke-width="1"/>
+  <text x="1127" y="86" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Threat Intelligence</text>
+  <text x="1127" y="103" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#484f58">STIX/TAXII &bull; feeds &bull; sharing</text>
+  <rect x="1040" y="130" width="175" height="50" rx="8" fill="#161b22" stroke="#7ee787" stroke-width="1"/>
+  <text x="1127" y="151" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Actor Tracking</text>
+  <text x="1127" y="168" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#484f58">TTPs &bull; campaigns &bull; personas</text>
+  <rect x="1040" y="195" width="175" height="50" rx="8" fill="#161b22" stroke="#7ee787" stroke-width="1"/>
+  <text x="1127" y="216" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Hunt Hypotheses</text>
+  <text x="1127" y="233" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#484f58">TTP-based &bull; anomaly-based</text>
+  <rect x="1040" y="260" width="175" height="50" rx="8" fill="#161b22" stroke="#7ee787" stroke-width="1"/>
+  <text x="1127" y="281" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Malware Analysis</text>
+  <text x="1127" y="298" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#484f58">Static &bull; dynamic &bull; sandbox</text>
+  <rect x="1040" y="325" width="175" height="50" rx="8" fill="#161b22" stroke="#7ee787" stroke-width="1"/>
+  <text x="1127" y="346" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Dark Web Monitoring</text>
+  <text x="1127" y="363" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#484f58">Credential leaks &bull; brand intel</text>
+  <rect x="1040" y="390" width="175" height="50" rx="8" fill="#161b22" stroke="#7ee787" stroke-width="1"/>
+  <text x="1127" y="411" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Attack Simulation</text>
+  <text x="1127" y="428" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#484f58">Atomic Red &bull; Caldera &bull; BAS</text>
+  <rect x="1040" y="455" width="175" height="50" rx="8" fill="#161b22" stroke="#7ee787" stroke-width="1"/>
+  <text x="1127" y="476" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Vuln Management</text>
+  <text x="1127" y="493" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#484f58">Nessus &bull; Qualys &bull; Rapid7</text>
+
+  <!-- RECOVERY column -->
+  <rect x="1230" y="65" width="160" height="50" rx="8" fill="#161b22" stroke="#f85149" stroke-width="1"/>
+  <text x="1310" y="86" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Eradication</text>
+  <text x="1310" y="103" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#484f58">Remove all persistence / implants</text>
+  <rect x="1230" y="130" width="160" height="50" rx="8" fill="#161b22" stroke="#f85149" stroke-width="1"/>
+  <text x="1310" y="151" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">System Rebuild</text>
+  <text x="1310" y="168" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#484f58">Reimage &bull; golden image</text>
+  <rect x="1230" y="195" width="160" height="50" rx="8" fill="#161b22" stroke="#f85149" stroke-width="1"/>
+  <text x="1310" y="216" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Credential Reset</text>
+  <text x="1310" y="233" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#484f58">All creds &bull; krbtgt &bull; DPAPI keys</text>
+  <rect x="1230" y="260" width="160" height="50" rx="8" fill="#161b22" stroke="#f85149" stroke-width="1"/>
+  <text x="1310" y="281" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Post-IR Hardening</text>
+  <text x="1310" y="298" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#484f58">Close attack paths found</text>
+  <rect x="1230" y="325" width="160" height="50" rx="8" fill="#161b22" stroke="#f85149" stroke-width="1"/>
+  <text x="1310" y="346" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Lessons Learned</text>
+  <text x="1310" y="363" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#484f58">RCA &bull; timeline &bull; gap analysis</text>
+  <rect x="1230" y="390" width="160" height="50" rx="8" fill="#161b22" stroke="#f85149" stroke-width="1"/>
+  <text x="1310" y="411" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">Detection Updates</text>
+  <text x="1310" y="428" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#484f58">New rules from findings</text>
+
+  <!-- Connection arrows -->
+  <line x1="190" y1="90" x2="220" y2="90" stroke="#58a6ff" stroke-width="1.5" marker-end="url(#arrowG)" opacity="0.5"/>
+  <line x1="400" y1="90" x2="430" y2="90" stroke="#39d353" stroke-width="1.5" marker-end="url(#arrowC)" opacity="0.5"/>
+  <line x1="610" y1="90" x2="640" y2="90" stroke="#79c0ff" stroke-width="1.5" marker-end="url(#arrowP)" opacity="0.5"/>
+  <line x1="820" y1="90" x2="850" y2="90" stroke="#bc8cff" stroke-width="1.5" marker-end="url(#arrowO)" opacity="0.5"/>
+  <line x1="1020" y1="90" x2="1040" y2="90" stroke="#f0883e" stroke-width="1.5" marker-end="url(#arrowG)" opacity="0.5"/>
+  <line x1="1215" y1="90" x2="1230" y2="90" stroke="#7ee787" stroke-width="1.5" marker-end="url(#arrowR)" opacity="0.5"/>
+
+  <!-- Legend -->
+  <rect x="15" y="800" width="1370" height="90" rx="10" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <text x="700" y="825" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#e6edf3" font-weight="600">DEFENSE LIFECYCLE LEGEND</text>
+  <circle cx="40" cy="855" r="6" fill="#58a6ff"/><text x="55" y="859" font-family="JetBrains Mono" font-size="9" fill="#484f58">Visibility</text>
+  <circle cx="150" cy="855" r="6" fill="#39d353"/><text x="165" y="859" font-family="JetBrains Mono" font-size="9" fill="#484f58">Detection</text>
+  <circle cx="265" cy="855" r="6" fill="#79c0ff"/><text x="280" y="859" font-family="JetBrains Mono" font-size="9" fill="#484f58">Triage</text>
+  <circle cx="360" cy="855" r="6" fill="#bc8cff"/><text x="375" y="859" font-family="JetBrains Mono" font-size="9" fill="#484f58">Response</text>
+  <circle cx="475" cy="855" r="6" fill="#f0883e"/><text x="490" y="859" font-family="JetBrains Mono" font-size="9" fill="#484f58">Hardening</text>
+  <circle cx="595" cy="855" r="6" fill="#7ee787"/><text x="610" y="859" font-family="JetBrains Mono" font-size="9" fill="#484f58">Intel / Hunt</text>
+  <circle cx="720" cy="855" r="6" fill="#f85149"/><text x="735" y="859" font-family="JetBrains Mono" font-size="9" fill="#484f58">Recovery</text>
+  <text x="1050" y="859" font-family="JetBrains Mono" font-size="9" fill="#484f58">Detect &rarr; Triage &rarr; Contain &rarr; Hunt &rarr; Eradicate &rarr; Harden</text>
+</svg>
+</div>
+
+<!-- ==================== DEFENSE FLOW CHAINS ==================== -->
+<div class="section-header"><h2><span>//</span> Defense <span class="blue">Flow Chains</span></h2><p class="section-desc">End-to-end defense workflows showing how blue team operations connect from detection through recovery and hardening.</p></div>
+
+<div class="flow-block"><div class="flow-title blue">Phishing Email &rarr; Detection &rarr; Block &rarr; Hunt</div><div class="flow-row">
+  <div class="flow-node hl-blue">Email gateway receives msg</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#39d353" stroke-width="1.5" marker-end="url(#arrowG)"/></svg><span class="arrow-label">scan</span></div>
+  <div class="flow-node hl-green">Defender / Proofpoint scan</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#79c0ff" stroke-width="1.5" marker-end="url(#arrowC)"/></svg><span class="arrow-label">alert</span></div>
+  <div class="flow-node hl-sky">SIEM alert &rarr; analyst</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#bc8cff" stroke-width="1.5" marker-end="url(#arrowP)"/></svg><span class="arrow-label">block</span></div>
+  <div class="flow-node hl-purple">Block sender + URL + hash</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#7ee787" stroke-width="1.5" marker-end="url(#arrowG)"/></svg><span class="arrow-label">hunt</span></div>
+  <div class="flow-node hl-lime">Hunt similar across org</div>
+</div></div>
+
+<div class="flow-block"><div class="flow-title green">EDR Alert &rarr; Triage &rarr; Contain &rarr; Forensics &rarr; Eradicate</div><div class="flow-row">
+  <div class="flow-node hl-green">EDR behavioral alert fires</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#79c0ff" stroke-width="1.5" marker-end="url(#arrowC)"/></svg><span class="arrow-label">triage</span></div>
+  <div class="flow-node hl-sky">Process tree + memory check</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#bc8cff" stroke-width="1.5" marker-end="url(#arrowP)"/></svg><span class="arrow-label">contain</span></div>
+  <div class="flow-node hl-purple">Network isolate endpoint</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#7ee787" stroke-width="1.5" marker-end="url(#arrowG)"/></svg><span class="arrow-label">collect</span></div>
+  <div class="flow-node hl-lime">Memory &amp; disk forensics</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#f85149" stroke-width="1.5" marker-end="url(#arrowR)"/></svg><span class="arrow-label">eradicate</span></div>
+  <div class="flow-node hl-red">Reimage + rules updated</div>
+</div></div>
+
+<div class="flow-block"><div class="flow-title sky">Credential Compromise &rarr; Account Lock &rarr; Scope &rarr; Reset All</div><div class="flow-row">
+  <div class="flow-node hl-blue">Impossible travel alert</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#bc8cff" stroke-width="1.5" marker-end="url(#arrowP)"/></svg><span class="arrow-label">disable</span></div>
+  <div class="flow-node hl-purple">Disable account + kill sessions</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#79c0ff" stroke-width="1.5" marker-end="url(#arrowC)"/></svg><span class="arrow-label">scope</span></div>
+  <div class="flow-node hl-sky">Enumerate all access &amp; OAuth apps</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#f0883e" stroke-width="1.5" marker-end="url(#arrowO)"/></svg><span class="arrow-label">revoke</span></div>
+  <div class="flow-node hl-orange">Revoke all tokens + passkeys</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#f85149" stroke-width="1.5" marker-end="url(#arrowR)"/></svg><span class="arrow-label">reset</span></div>
+  <div class="flow-node hl-red">New creds + re-enroll MFA</div>
+</div></div>
+
+<div class="flow-block"><div class="flow-title purple">Lateral Movement Detected &rarr; Pivot Scope &rarr; Segment &rarr; Hunt</div><div class="flow-row">
+  <div class="flow-node hl-green">PsExec / WMI alert fires</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#79c0ff" stroke-width="1.5" marker-end="url(#arrowC)"/></svg><span class="arrow-label">trace</span></div>
+  <div class="flow-node hl-sky">Map all pivot paths</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#bc8cff" stroke-width="1.5" marker-end="url(#arrowP)"/></svg><span class="arrow-label">segment</span></div>
+  <div class="flow-node hl-purple">Firewall isolate blast radius</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#7ee787" stroke-width="1.5" marker-end="url(#arrowG)"/></svg><span class="arrow-label">hunt</span></div>
+  <div class="flow-node hl-lime">Hunt cred use across all hosts</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#f85149" stroke-width="1.5" marker-end="url(#arrowR)"/></svg><span class="arrow-label">harden</span></div>
+  <div class="flow-node hl-red">Block lateral movement paths</div>
+</div></div>
+
+<div class="flow-block"><div class="flow-title lime">LSASS Access Alert &rarr; Cred Dump Investigation &rarr; Reset Domain</div><div class="flow-row">
+  <div class="flow-node hl-green">EDR LSASS access alert</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#79c0ff" stroke-width="1.5" marker-end="url(#arrowC)"/></svg><span class="arrow-label">confirm</span></div>
+  <div class="flow-node hl-sky">Confirm dump + process owner</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#bc8cff" stroke-width="1.5" marker-end="url(#arrowP)"/></svg><span class="arrow-label">scope</span></div>
+  <div class="flow-node hl-purple">Identify all creds in scope</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#f85149" stroke-width="1.5" marker-end="url(#arrowR)"/></svg><span class="arrow-label">reset</span></div>
+  <div class="flow-node hl-red">Reset all exposed accounts</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#f0883e" stroke-width="1.5" marker-end="url(#arrowO)"/></svg><span class="arrow-label">krbtgt x2</span></div>
+  <div class="flow-node hl-orange">Double-rotate krbtgt</div>
+</div></div>
+
+<div class="flow-block"><div class="flow-title orange">Ransomware Detection &rarr; Mass Isolate &rarr; BC/DR &rarr; Rebuild</div><div class="flow-row">
+  <div class="flow-node hl-red">Mass file encryption alert</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#bc8cff" stroke-width="1.5" marker-end="url(#arrowP)"/></svg><span class="arrow-label">kill net</span></div>
+  <div class="flow-node hl-purple">Emergency network shutdown</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#7ee787" stroke-width="1.5" marker-end="url(#arrowG)"/></svg><span class="arrow-label">scope</span></div>
+  <div class="flow-node hl-lime">Identify patient zero + spread</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#f0883e" stroke-width="1.5" marker-end="url(#arrowO)"/></svg><span class="arrow-label">activate DR</span></div>
+  <div class="flow-node hl-orange">Activate BC/DR plan + backups</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#f85149" stroke-width="1.5" marker-end="url(#arrowR)"/></svg><span class="arrow-label">rebuild</span></div>
+  <div class="flow-node hl-red">Restore from clean backups</div>
+</div></div>
+
+<div class="flow-block"><div class="flow-title cyan">Cloud Token Theft &rarr; Revoke &rarr; CAP Fix &rarr; Audit App Regs</div><div class="flow-row">
+  <div class="flow-node hl-sky">Anomalous Graph API access</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#bc8cff" stroke-width="1.5" marker-end="url(#arrowP)"/></svg><span class="arrow-label">revoke</span></div>
+  <div class="flow-node hl-purple">Revoke all user tokens</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#7ee787" stroke-width="1.5" marker-end="url(#arrowG)"/></svg><span class="arrow-label">audit</span></div>
+  <div class="flow-node hl-lime">Audit app registrations + consent</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#f0883e" stroke-width="1.5" marker-end="url(#arrowO)"/></svg><span class="arrow-label">fix CA</span></div>
+  <div class="flow-node hl-orange">Tighten Conditional Access</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#58a6ff" stroke-width="1.5" marker-end="url(#arrowB)"/></svg><span class="arrow-label">monitor</span></div>
+  <div class="flow-node hl-blue">Enhanced Graph audit logging</div>
+</div></div>
+
+<div class="flow-block"><div class="flow-title blue">ADCS ESC Exploitation &rarr; Template Fix &rarr; Cert Revoke &rarr; Audit</div><div class="flow-row">
+  <div class="flow-node hl-red">Certificate misuse detected</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#bc8cff" stroke-width="1.5" marker-end="url(#arrowP)"/></svg><span class="arrow-label">revoke</span></div>
+  <div class="flow-node hl-purple">Revoke issued certs</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#f0883e" stroke-width="1.5" marker-end="url(#arrowO)"/></svg><span class="arrow-label">fix</span></div>
+  <div class="flow-node hl-orange">Fix vulnerable template perms</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#7ee787" stroke-width="1.5" marker-end="url(#arrowG)"/></svg><span class="arrow-label">audit</span></div>
+  <div class="flow-node hl-lime">Scan all templates (Locksmith)</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#58a6ff" stroke-width="1.5" marker-end="url(#arrowB)"/></svg><span class="arrow-label">monitor</span></div>
+  <div class="flow-node hl-blue">ADCS audit logging enabled</div>
+</div></div>
+
+<div class="flow-block"><div class="flow-title green">Threat Hunt: Kerberoast &rarr; Find Weak SPNs &rarr; Fix &rarr; Alert</div><div class="flow-row">
+  <div class="flow-node hl-lime">Hypothesis: RC4 Kerberos tickets</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#79c0ff" stroke-width="1.5" marker-end="url(#arrowC)"/></svg><span class="arrow-label">query SIEM</span></div>
+  <div class="flow-node hl-sky">Find TGS-REQ with etype 23</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#7ee787" stroke-width="1.5" marker-end="url(#arrowG)"/></svg><span class="arrow-label">fix</span></div>
+  <div class="flow-node hl-lime">Enforce AES on all SPNs</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#39d353" stroke-width="1.5" marker-end="url(#arrowG)"/></svg><span class="arrow-label">alert rule</span></div>
+  <div class="flow-node hl-green">Alert on any RC4 TGS going forward</div>
+</div></div>
+
+<div class="flow-block"><div class="flow-title orange">DCSync Alert &rarr; Verify Non-DC &rarr; Lock Account &rarr; AD Review</div><div class="flow-row">
+  <div class="flow-node hl-red">Event 4662 DRS replication alert</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#79c0ff" stroke-width="1.5" marker-end="url(#arrowC)"/></svg><span class="arrow-label">verify</span></div>
+  <div class="flow-node hl-sky">Confirm source is not a DC</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#bc8cff" stroke-width="1.5" marker-end="url(#arrowP)"/></svg><span class="arrow-label">lock</span></div>
+  <div class="flow-node hl-purple">Disable compromised account</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#f0883e" stroke-width="1.5" marker-end="url(#arrowO)"/></svg><span class="arrow-label">audit perms</span></div>
+  <div class="flow-node hl-orange">Audit DCSync-capable accounts</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#f85149" stroke-width="1.5" marker-end="url(#arrowR)"/></svg><span class="arrow-label">rotate</span></div>
+  <div class="flow-node hl-red">krbtgt x2 + all DA creds</div>
+</div></div>
+
+<div class="flow-block"><div class="flow-title purple">Supply Chain Alert &rarr; Isolate Package &rarr; Scan &rarr; Remediate</div><div class="flow-row">
+  <div class="flow-node hl-blue">Malicious package alert</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#bc8cff" stroke-width="1.5" marker-end="url(#arrowP)"/></svg><span class="arrow-label">block</span></div>
+  <div class="flow-node hl-purple">Block package in proxy / registry</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#7ee787" stroke-width="1.5" marker-end="url(#arrowG)"/></svg><span class="arrow-label">scan</span></div>
+  <div class="flow-node hl-lime">Scan all systems for install</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#79c0ff" stroke-width="1.5" marker-end="url(#arrowC)"/></svg><span class="arrow-label">triage</span></div>
+  <div class="flow-node hl-sky">Triage affected hosts</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#f85149" stroke-width="1.5" marker-end="url(#arrowR)"/></svg><span class="arrow-label">remediate</span></div>
+  <div class="flow-node hl-red">Remove + reimage if needed</div>
+</div></div>
+
+<div class="flow-block"><div class="flow-title red">Data Exfil Alert &rarr; Kill Channel &rarr; DLP Review &rarr; Scope Loss</div><div class="flow-row">
+  <div class="flow-node hl-red">Large DNS/HTTPS transfer alert</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#bc8cff" stroke-width="1.5" marker-end="url(#arrowP)"/></svg><span class="arrow-label">block</span></div>
+  <div class="flow-node hl-purple">Block endpoint + egress path</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#7ee787" stroke-width="1.5" marker-end="url(#arrowG)"/></svg><span class="arrow-label">review DLP</span></div>
+  <div class="flow-node hl-lime">Review DLP logs + proxy</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#79c0ff" stroke-width="1.5" marker-end="url(#arrowC)"/></svg><span class="arrow-label">scope</span></div>
+  <div class="flow-node hl-sky">Determine data touched</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#f0883e" stroke-width="1.5" marker-end="url(#arrowO)"/></svg><span class="arrow-label">notify</span></div>
+  <div class="flow-node hl-orange">Legal / breach notification</div>
+</div></div>
+
+<div class="flow-block"><div class="flow-title teal">Honeypot / Canary Triggered &rarr; Validate &rarr; Track Attacker &rarr; Block</div><div class="flow-row">
+  <div class="flow-node hl-blue">Canary token fires</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#79c0ff" stroke-width="1.5" marker-end="url(#arrowC)"/></svg><span class="arrow-label">validate</span></div>
+  <div class="flow-node hl-sky">Confirm real access + source IP</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#7ee787" stroke-width="1.5" marker-end="url(#arrowG)"/></svg><span class="arrow-label">track</span></div>
+  <div class="flow-node hl-lime">Trace attacker through logs</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#bc8cff" stroke-width="1.5" marker-end="url(#arrowP)"/></svg><span class="arrow-label">contain</span></div>
+  <div class="flow-node hl-purple">Isolate source account/host</div><div class="flow-arrow"><svg viewBox="0 0 36 20"><line x1="0" y1="10" x2="31" y2="10" stroke="#39d353" stroke-width="1.5" marker-end="url(#arrowG)"/></svg><span class="arrow-label">new rules</span></div>
+  <div class="flow-node hl-green">Add attacker IOCs to detection</div>
+</div></div>
+
+<div class="separator"></div>
+<!-- ==================== SIEM & LOG MANAGEMENT ==================== -->
+<div class="section-header"><h2><span>//</span> SIEM <span class="blue">&amp;</span> Log <span class="sky">Management</span></h2><p class="section-desc">The foundation of detection. Without comprehensive, quality logging you are flying blind. Invest in coverage before tooling.</p></div>
+
+<div class="data-flow-card"><h4>Log Source Priority Matrix</h4><pre>
+<span class="key">TIER 1 — CRITICAL (must have)</span>
+├── <span class="val">Windows Security Event Log</span>   4624/4625 (logon) · 4688 (process) · 4698 (sched task) · 4662 (AD obj access)
+├── <span class="val">Windows Sysmon</span>               Process · network · registry · file · pipe · DNS · WMI events
+├── <span class="val">EDR Telemetry</span>                Behavioral events · process injection · memory anomalies
+├── <span class="val">Network Firewall / IDS</span>        Allowed + denied connections · lateral movement
+├── <span class="val">DNS Logs</span>                      Query logs → C2 beacon detection · domain generation
+└── <span class="val">Identity Provider (Entra/Okta)</span> Sign-ins · MFA · Conditional Access · risk signals
+
+<span class="key">TIER 2 — HIGH VALUE</span>
+├── <span class="val">Proxy / Web Filter</span>            HTTP/HTTPS traffic · new domains · large uploads
+├── <span class="val">Email Security Gateway</span>        Phishing campaigns · attachment analysis · link clicks
+├── <span class="val">VPN / Remote Access</span>           Authentication · unusual hours · geoanomalies
+├── <span class="val">Active Directory</span>              Replication · group changes · LDAP queries · ADCS
+├── <span class="val">PowerShell ScriptBlock (4104)</span>  Script content logging · amsi data
+└── <span class="val">Exchange / M365 Audit</span>         Mailbox access · forwarding rules · consent grants
+
+<span class="key">TIER 3 — SITUATIONAL</span>
+├── <span class="val">WMI Activity Log</span>              WMI subscriptions · remote exec
+├── <span class="val">NetFlow / IPFIX</span>               East-west traffic baselines · beaconing
+├── <span class="val">DHCP / RADIUS</span>                 IP-to-hostname mapping · NAC bypass
+├── <span class="val">Cloud API (CloudTrail / Defender)</span> IAM changes · instance creation · exfil
+└── <span class="val">Application / Web Server</span>      WAF bypass attempts · web shell indicators
+
+<span class="key">RETENTION GUIDANCE</span>
+├── <span class="good">Hot (searchable)</span>: 90 days minimum — 1 year preferred for enterprise
+├── <span class="warn">Warm (archived)</span>: 1–3 years — regulatory / legal hold requirements
+└── <span class="danger">Cold (tape)</span>: 3–7 years — compliance-dependent, restore on demand
+</pre></div>
+
+<div class="details-grid">
+  <div class="detail-card border-blue"><span class="tag siem">SIEM</span><h3>Splunk Detection Engineering</h3><div class="card-sub">SPL queries, correlation rules, and operational tuning for enterprise Splunk deployments</div><div class="card-body"><ul class="card-list"><li><strong>Correlation searches</strong>: Use <code>| tstats</code> for high-volume data — far faster than raw index searches</li><li><strong>Risk-Based Alerting (RBA)</strong>: Assign risk scores per event; alert on cumulative risk threshold. Reduces alert fatigue dramatically</li><li><strong>Asset &amp; Identity framework</strong>: Normalize hostnames, IPs, users for pivot-based investigation</li><li><strong>Adaptive Response Actions</strong>: Trigger SOAR playbooks, EDR isolation, or firewall blocks directly from alert</li><li><strong>Threat hunting</strong>: <code class="tool">| inputlookup</code> for IOC matching; <code>| eventstats</code> for baselines; <code>| streamstats</code> for sequential analysis</li><li><strong>ES Content Pack</strong>: Pre-built MITRE ATT&amp;CK-aligned detections — validate and tune, don't ship raw</li><li><strong>OPSEC for analysts</strong>: Query audit logs — attackers living in Splunk will search for your hunting activity</li></ul></div></div>
+
+  <div class="detail-card border-blue"><span class="tag siem">SIEM</span><h3>Microsoft Sentinel</h3><div class="card-sub">Cloud-native SIEM — KQL-based, deep M365/Azure integration, UEBA built-in</div><div class="card-body"><ul class="card-list"><li><strong>KQL fundamentals</strong>: <code>| where</code>, <code>| summarize</code>, <code>| join</code>, <code>| render</code> — master these before writing rules</li><li><strong>Analytics Rules</strong>: Scheduled, NRT (Near Real Time), and Fusion (ML correlation) rule types</li><li><strong>Watchlists</strong>: Import threat intel, asset inventory, or known-good baselines for enrichment</li><li><strong>UEBA</strong>: Built-in user/entity baseline; Anomaly insights feed into Fusion detection engine</li><li><strong>Automation rules + Playbooks</strong>: Logic Apps trigger on incidents — auto-enrich, notify, and respond</li><li><strong>Content Hub</strong>: Solutions for connector + rule + workbook bundles — validate rules before enabling</li><li><strong>Cost control</strong>: Use Data Collection Rules (DCR) to filter noisy sources before ingestion</li></ul></div></div>
+
+  <div class="detail-card border-blue"><span class="tag siem">SIEM</span><h3>Elastic Security</h3><div class="card-sub">Open-source ELK stack with commercial security features — scalable and customizable</div><div class="card-body"><ul class="card-list"><li><strong>ECS (Elastic Common Schema)</strong>: Normalize all log sources to ECS for consistent detection rules</li><li><strong>Detection Engine</strong>: ESQL / EQL rules with ML-based anomaly jobs — versioned via GitHub</li><li><strong>Fleet + Elastic Agent</strong>: Unified agent for log collection, endpoint telemetry, and network monitoring</li><li><strong>Prebuilt rules</strong>: 900+ MITRE-aligned rules at <code class="tool">github.com/elastic/detection-rules</code> — tune FPs before enabling</li><li><strong>Timeline</strong>: Visual investigation interface — attach findings to cases for IR tracking</li><li><strong>ESQL hunting</strong>: New query language for complex analytical queries; faster than EQL for large datasets</li></ul></div></div>
+
+  <div class="detail-card border-blue"><span class="tag siem">SIEM</span><h3>Sysmon Deployment</h3><div class="card-sub">Microsoft Sysinternals Sysmon — essential endpoint telemetry for Windows detection</div><div class="card-body"><ul class="card-list"><li><strong>Key event IDs</strong>: 1 (process), 3 (network), 7 (DLL load), 8 (CreateRemoteThread), 10 (ProcessAccess), 11 (file create), 12/13 (registry), 15 (ADS), 17/18 (pipe), 22 (DNS)</li><li><strong>SwiftOnSecurity config</strong>: <code class="tool">sysmonconfig.xml</code> — widely used baseline, filter noisy processes first</li><li><strong>Olaf Hartong's config</strong>: More comprehensive, modular — good for mature environments</li><li><strong>LSASS protection</strong>: Event 10 with GrantedAccess 0x1FFFFF or 0x1010 = LSASS dump attempt</li><li><strong>Network events</strong>: Event 3 captures process-to-IP correlation — enables C2 beacon detection</li><li><strong>DNS Event 22</strong>: Captures DNS queries with the requesting process — crucial for C2 over DNS detection</li><li><strong>Performance</strong>: Filter aggressively — shipping all Sysmon events raw is expensive and noisy</li></ul></div></div>
+</div>
+
+<div class="separator"></div>
+
+<!-- ==================== EDR & ENDPOINT DETECTION ==================== -->
+<div class="section-header"><h2><span>//</span> EDR <span class="green">&amp;</span> Endpoint <span class="lime">Detection</span></h2><p class="section-desc">Modern EDRs are the primary detection layer for endpoint attacks. Understanding what they see — and where they're blind — is essential for both detection tuning and incident response.</p></div>
+
+<div class="data-flow-card"><h4>EDR Detection Layers — What Blue Team Sees</h4><pre>
+<span class="key">KERNEL CALLBACKS (highest fidelity — attacker cannot bypass)</span>
+├── <span class="good">PsSetCreateProcessNotifyRoutine</span>  Every process creation → attacker can't hide new processes
+├── <span class="good">PsSetCreateThreadNotifyRoutine</span>   Remote thread creation → cross-process injection alert
+├── <span class="good">PsSetLoadImageNotifyRoutine</span>      DLL loads → image path, signed status, memory-backed check
+└── <span class="good">ObRegisterCallbacks</span>              Process handle access → LSASS access attempts
+
+<span class="key">ETW TELEMETRY (rich but patchable in-process)</span>
+├── <span class="warn">Microsoft-Windows-Threat-Intelligence</span>  Kernel-sourced inject/read/write process events
+├── <span class="warn">.NET CLR ETW</span>                             Assembly loads, JIT compilation
+├── <span class="warn">PowerShell ETW (4104)</span>                    Script block content before execution
+└── <span class="warn">WMI-Activity Operational</span>                 WMI provider loads and query execution
+
+<span class="key">MEMORY SCANNING (periodic — gaps exist)</span>
+├── <span class="warn">MZ/PE header in executable memory</span>       Injected DLLs, reflective loaders
+├── <span class="warn">Unbacked executable regions</span>             VirtualAlloc shellcode (no backing file)
+├── <span class="warn">Known shellcode signatures</span>              CS/Sliver/Metasploit stagers
+└── <span class="warn">RWX memory regions</span>                     Suspicious when combined with network activity
+
+<span class="key">BEHAVIORAL ANALYTICS (ML + heuristics)</span>
+├── <span class="good">Call stack analysis</span>     Detect shellcode with anomalous return addresses
+├── <span class="good">Parent-child anomalies</span>  Word spawning PowerShell, Office spawning cmd.exe
+├── <span class="warn">Credential access</span>       LSASS reads, SAM access, DPAPI operations
+└── <span class="warn">Lateral movement</span>        PsExec, WMI, service creation patterns across hosts
+</pre></div>
+
+<div class="details-grid">
+  <div class="detail-card border-green"><span class="tag edr">EDR</span><h3>Microsoft Defender for Endpoint</h3><div class="card-sub">MDE — deeply integrated Windows telemetry, cloud-ML, and Attack Surface Reduction rules</div><div class="card-body"><ul class="card-list"><li><strong>Attack Surface Reduction (ASR)</strong>: Rules that block specific behaviors — enable in audit mode first, then block. Critical rules: block Office child processes, block Office from injecting into processes</li><li><strong>Tamper Protection</strong>: Prevents local disable of Defender — enforce via Intune or Group Policy. Critical for persistence against</li><li><strong>Defender Antivirus</strong>: Real-time protection, cloud-delivered protection, and automatic sample submission — all three should be enabled</li><li><strong>Advanced Hunting (KQL)</strong>: Rich DeviceProcessEvents, DeviceNetworkEvents, DeviceRegistryEvents tables — write custom hunts in security.microsoft.com</li><li><strong>Live Response</strong>: Remote shell on any enrolled device — run scripts, collect files without VPN</li><li><strong>Smart App Control (SAC)</strong>: Windows 11 feature — blocks unsigned binaries; complement with WDAC for enterprises</li></ul></div></div>
+
+  <div class="detail-card border-green"><span class="tag edr">EDR</span><h3>CrowdStrike Falcon</h3><div class="card-sub">Industry-leading behavioral EDR — sensor telemetry, cloud ML, and Overwatch managed detection</div><div class="card-body"><ul class="card-list"><li><strong>Prevent policies</strong>: Behavioral prevention policies — enable extra-paranoid mode in policy for high-value hosts (DCs, devs, executives)</li><li><strong>Custom IOA rules</strong>: Create custom behavioral detections based on process, command line, network patterns — not signature-based</li><li><strong>Spotlight</strong>: Vulnerability management — prioritized by exposure and active exploitation in the wild</li><li><strong>Event Search</strong>: Query raw sensor telemetry with Splunk-like syntax — pivot from any IOC across the fleet</li><li><strong>Overwatch</strong>: CrowdStrike's managed threat hunting team overlaid on your telemetry — worth the cost for orgs without 24/7 SOC</li><li><strong>RTR (Real Time Response)</strong>: Live remote shell — run scripts, kill processes, network isolate from console</li></ul></div></div>
+
+  <div class="detail-card border-green"><span class="tag edr">EDR</span><h3>SentinelOne</h3><div class="card-sub">AI-powered autonomous EDR — can kill and rollback threats without human intervention</div><div class="card-body"><ul class="card-list"><li><strong>Storyline</strong>: Contextual process tree that links every process, file, network event into attack stories — accelerates triage</li><li><strong>ActiveEDR</strong>: Autonomous threat response — kill, quarantine, rollback without analyst approval (configure carefully)</li><li><strong>Rollback</strong>: Windows VSS-based rollback of ransomware file encryption — restore encrypted files automatically</li><li><strong>Deep Visibility</strong>: Raw telemetry query interface — pivot on any attribute across fleet</li><li><strong>Ranger</strong>: Network discovery via sensor telemetry — find unmanaged devices on the network</li><li><strong>Remote Shell</strong>: Singularity RemoteOps — live remote investigation without VPN</li></ul></div></div>
+
+  <div class="detail-card border-green"><span class="tag edr">EDR</span><h3>Velociraptor</h3><div class="card-sub">Open-source DFIR platform — hunt and collect at scale across thousands of endpoints</div><div class="card-body"><ul class="card-list"><li><strong>VQL (Velociraptor Query Language)</strong>: SQL-like language for endpoint queries — collect artifacts, parse files, hunt patterns</li><li><strong>Artifacts</strong>: Pre-built collection templates for DFIR — persistence, credential files, lateral movement artifacts</li><li><strong>Live queries</strong>: Push VQL queries to every endpoint in the fleet — results stream back in seconds</li><li><strong>Timeline</strong>: Correlate collected data into attack timelines automatically</li><li><strong>Offline collection</strong>: Run standalone collector on isolated hosts — useful for IR without network connectivity</li><li><strong>Open source</strong>: Self-host with PostgreSQL backend — cost-effective for organizations without commercial EDR budget</li></ul></div></div>
+</div>
+
+<div class="separator"></div>
+<!-- ==================== DETECTION ENGINEERING ==================== -->
+<div class="section-header"><h2><span>//</span> Detection <span class="cyan">Engineering</span></h2><p class="section-desc">Building, maintaining, and improving detection capabilities. Coverage over the MITRE ATT&amp;CK framework, rule lifecycle management, and reducing false positive noise.</p></div>
+
+<div class="details-grid">
+  <div class="detail-card border-cyan"><span class="tag detect">DETECT</span><h3>SIGMA Rules</h3><div class="card-sub">Vendor-agnostic detection rule format — write once, deploy anywhere</div><div class="card-body"><ul class="card-list"><li><strong>Format</strong>: YAML-based generic detection rules that compile to SIEM-specific query languages via <code class="tool">sigma-cli</code></li><li><strong>Rule components</strong>: logsource (category + product), detection (keywords/filters), falsepositives, level (informational → critical)</li><li><strong>SigmaHQ</strong>: Community rule repository at <code class="tool">github.com/SigmaHQ/sigma</code> — 3000+ rules aligned to MITRE ATT&amp;CK</li><li><strong>Compilation</strong>: <code>sigma convert -t splunk -p splunk_windows rule.yml</code> — converts to platform-specific query</li><li><strong>Tuning</strong>: Add <code>filter</code> conditions to suppress known false positives — <code>filter_legit_software</code> blocks</li><li><strong>Rule lifecycle</strong>: Test in audit → measure FP rate → tune → enable → monitor regression</li><li><strong>Detection-as-Code</strong>: Store rules in Git, CI/CD pipeline validates and deploys — version controlled detections</li></ul></div></div>
+
+  <div class="detail-card border-cyan"><span class="tag detect">DETECT</span><h3>YARA Rules</h3><div class="card-sub">Pattern-based file and memory scanning — detect malware families by content</div><div class="card-body"><ul class="card-list"><li><strong>Strings section</strong>: Define byte patterns, text strings, or hex sequences to match</li><li><strong>Condition</strong>: Boolean logic combining string matches with file properties (size, PE headers, entropy)</li><li><strong>Modules</strong>: PE module for import tables, exports, sections; math module for entropy; dotnet for .NET metadata</li><li><strong>Memory scanning</strong>: Scan live process memory with <code class="tool">yara64 -p 4 rule.yar PID</code> or via EDR integration</li><li><strong>Threat intel YARA</strong>: Kaspersky, Mandiant, and Elastic publish free YARA rules for known malware families</li><li><strong>Retrohunt</strong>: Upload rule to VirusTotal for retroactive file scanning across their corpus</li><li><strong>Performance</strong>: Anchor rules with rare strings first; avoid broad conditions that scan everything</li></ul></div></div>
+
+  <div class="detail-card border-cyan"><span class="tag detect">DETECT</span><h3>MITRE ATT&amp;CK Coverage Mapping</h3><div class="card-sub">Map detection coverage to adversary TTPs — identify gaps before attackers exploit them</div><div class="card-body"><ul class="card-list"><li><strong>ATT&amp;CK Navigator</strong>: Visual heatmap of technique coverage — color code by detection, prevention, or threat actor</li><li><strong>Coverage tiers</strong>: Alert (detected), Logged (visible but no alert), Blind (no visibility) — know your gaps</li><li><strong>Prioritization</strong>: Use threat intelligence to prioritize coverage for techniques used by actors targeting your sector</li><li><strong>Detection testing</strong>: Atomic Red Team tests mapped 1:1 to ATT&amp;CK — validate detections fire on real technique execution</li><li><strong>Purple team</strong>: Red team executes techniques, blue team validates alert coverage — document results in ATT&amp;CK Navigator</li><li><strong>D3FEND</strong>: MITRE D3FEND maps countermeasures to ATT&amp;CK techniques — use to identify defensive controls needed</li></ul></div></div>
+
+  <div class="detail-card border-cyan"><span class="tag detect">DETECT</span><h3>Detection Rule Development</h3><div class="card-sub">Building high-fidelity, low-noise detections that analysts will trust and act on</div><div class="card-body"><ul class="card-list"><li><strong>Start with attack simulation</strong>: Execute the technique (Atomic Red Team / Caldera), observe what data sources fire, build rule from real data</li><li><strong>Specificity vs. sensitivity</strong>: Broad rules catch more, high FP rate kills analyst trust. Narrow rules miss variants</li><li><strong>Baseline first</strong>: Understand normal before writing anomaly rules — what does legit PsExec look like in your environment?</li><li><strong>Layered detection</strong>: Single technique, multiple rule angles — process creation + network + registry = chained alert</li><li><strong>False positive tracking</strong>: Log every FP with source — build suppression knowledge base over time</li><li><strong>Detection retirement</strong>: Rules that never fire in 6 months need review — either gap in logging or detection is broken</li></ul></div></div>
+
+  <div class="detail-card border-cyan"><span class="tag detect">DETECT</span><h3>Behavioral Analytics &amp; UEBA</h3><div class="card-sub">User and Entity Behavior Analytics — detect anomalies when signatures won't help</div><div class="card-body"><ul class="card-list"><li><strong>Baseline period</strong>: Collect 30-90 days of normal behavior before enabling anomaly alerts — shorter = more noise</li><li><strong>Key use cases</strong>: Impossible travel, off-hours access, privileged account misuse, data staging before exfil</li><li><strong>Peer group analysis</strong>: Compare user behavior to their peer group — developer accessing finance systems is anomalous</li><li><strong>Entity scoring</strong>: Aggregate risk signals per user/host over rolling window — alert on cumulative score exceeding threshold</li><li><strong>ML model drift</strong>: Normal behavior changes over time (new role, project) — periodic retraining or supervised feedback loops</li><li><strong>Tools</strong>: Splunk UBA, Microsoft Sentinel UEBA, Securonix, Exabeam, Elastic ML anomaly detection</li></ul></div></div>
+
+  <div class="detail-card border-cyan"><span class="tag detect">DETECT</span><h3>Network Detection &amp; Response (NDR)</h3><div class="card-sub">Network-layer visibility for detecting C2, lateral movement, and data exfiltration</div><div class="card-body"><ul class="card-list"><li><strong>Zeek (Bro)</strong>: Network security monitor generating connection logs, HTTP, DNS, SSL, Kerberos, SMB metadata</li><li><strong>Suricata</strong>: IDS/IPS with PCAP analysis — ET Open rules cover C2 frameworks, exploit kits, malware families</li><li><strong>Arkime (Moloch)</strong>: Full PCAP capture and indexing — retrospective packet analysis when you need raw evidence</li><li><strong>JA3/JA3S fingerprinting</strong>: TLS client/server fingerprints — identify C2 frameworks by TLS hello characteristics</li><li><strong>JARM</strong>: Active TLS server fingerprinting — scan internal hosts to identify C2 team servers with known signatures</li><li><strong>Beaconing detection</strong>: Statistical analysis of connection interval regularity — C2 sleep+jitter creates detectable patterns</li><li><strong>DNS analytics</strong>: Long subdomain strings, high-entropy domains, unusual query types (TXT, MX for C2)</li></ul></div></div>
+</div>
+
+<div class="separator"></div>
+
+<!-- ==================== INCIDENT RESPONSE ==================== -->
+<div class="section-header"><h2><span>//</span> Incident <span class="red">Response</span></h2><p class="section-desc">Structured response process from initial alert to full recovery. Speed, documentation, and scope-accuracy determine outcomes. Contain early, understand fully before eradicating.</p></div>
+
+<div class="data-flow-card"><h4>IR Lifecycle &amp; Key Decision Points</h4><pre>
+<span class="key">PHASE 1: PREPARATION</span>
+├── <span class="good">IR Runbooks</span>: Documented procedures per incident type (ransomware, BEC, insider threat)
+├── <span class="good">Contact lists</span>: Legal, PR, executive, cyber insurance, law enforcement — pre-agreed escalation paths
+├── <span class="good">Asset inventory</span>: Know your crown jewels before an incident — what matters most?
+└── <span class="good">Tabletop exercises</span>: Run scenarios quarterly — muscle memory reduces response time
+
+<span class="key">PHASE 2: DETECTION &amp; ANALYSIS</span>
+├── <span class="val">Initial triage</span>: True positive confirmation · scope estimation · severity classification
+├── <span class="val">Timeline construction</span>: Patient zero → first action → lateral spread → impact
+├── <span class="warn">Avoid tunnel vision</span>: First compromised host ≠ only compromised host
+└── <span class="warn">Preserve evidence</span>: Memory capture BEFORE rebooting; log preservation before rotation
+
+<span class="key">PHASE 3: CONTAINMENT</span>
+├── <span class="val">Short-term</span>: Network isolate affected hosts — EDR isolation or VLAN change
+├── <span class="val">Account containment</span>: Disable compromised accounts, revoke tokens, kill active sessions
+├── <span class="warn">Don't tip off attacker</span>: Silent containment vs. visible response — attacker may accelerate if they notice
+└── <span class="warn">Scope before you act</span>: Containing too early on wrong host = attacker still active elsewhere
+
+<span class="key">PHASE 4: ERADICATION</span>
+├── <span class="val">Remove all persistence</span>: Scheduled tasks · services · registry keys · DLL sideloads · WMI subs
+├── <span class="val">Clean or reimage</span>: For sophisticated attackers, reimaging > cleaning
+├── <span class="danger">Credential reset scope</span>: EVERY credential that could have been exposed must be rotated
+└── <span class="danger">AD-wide compromise</span>: Reset krbtgt TWICE (48hr apart) · all DA accounts · DPAPI backup key
+
+<span class="key">PHASE 5: RECOVERY &amp; LESSONS LEARNED</span>
+├── <span class="good">Validate before reconnecting</span>: Confirm clean before returning to production
+├── <span class="good">Monitor closely post-recovery</span>: Attacker may have left secondary persistence
+├── <span class="good">Root cause analysis</span>: What control failed? Why? What will prevent recurrence?
+└── <span class="good">Detection updates</span>: Every IR should generate at least one new detection rule
+</pre></div>
+
+<div class="details-grid">
+  <div class="detail-card border-red"><span class="tag ir">IR</span><h3>Triage &amp; Scope Assessment</h3><div class="card-sub">Rapidly determine the true scope of compromise — don't eradicate before you understand the full picture</div><div class="card-body"><ul class="card-list"><li><strong>Patient zero identification</strong>: Work backwards from the alert — what was the first malicious action on this host?</li><li><strong>Lateral movement mapping</strong>: Use authentication logs (4624/4648) to trace account usage across all hosts</li><li><strong>Credential scope</strong>: What accounts logged into the compromised host? All are potentially compromised</li><li><strong>Data touched</strong>: What file shares, databases, email were accessed? Determines breach notification scope</li><li><strong>Tool</strong>: <code class="tool">Velociraptor</code> — hunt for attacker artifacts across the entire fleet in minutes</li><li><strong>Timeline tool</strong>: <code class="tool">Plaso/log2timeline</code> — super-timeline from multiple forensic artifacts for accurate chronology</li><li><strong>Key question</strong>: Is the attacker still active? Monitor without tipping off while scoping</li></ul></div></div>
+
+  <div class="detail-card border-red"><span class="tag ir">IR</span><h3>Memory Forensics</h3><div class="card-sub">Capture and analyze volatile memory — find injected code, C2 connections, and in-memory credentials</div><div class="card-body"><ul class="card-list"><li><strong>Capture tools</strong>: <code class="tool">winpmem</code> (Windows), <code class="tool">LiME</code> (Linux kernel module), <code class="tool">osxpmem</code> (macOS)</li><li><strong>Analysis framework</strong>: <code class="tool">Volatility 3</code> — plugins for process listing, network connections, injected code, registry</li><li><strong>Key Volatility plugins</strong>: <code>pstree</code>, <code>netscan</code>, <code>cmdline</code>, <code>malfind</code> (injected code), <code>handles</code>, <code>dlllist</code></li><li><strong>malfind</strong>: Identifies memory regions with MZ headers, executable without backing file, or RWX — primary injected code finder</li><li><strong>Credential extraction</strong>: <code class="tool">pypykatz</code> on memory dump — extracts LSASS credentials for scope assessment</li><li><strong>MemProcFS</strong>: Mount memory image as filesystem — browse process memory, extract files, search strings</li><li><strong>Critical</strong>: Capture memory BEFORE rebooting or isolating — shutdown destroys volatile evidence</li></ul></div></div>
+
+  <div class="detail-card border-red"><span class="tag ir">IR</span><h3>Disk &amp; Artifact Forensics</h3><div class="card-sub">Persistent artifacts on disk — even after malware deletion, forensic traces remain</div><div class="card-body"><ul class="card-list"><li><strong>Master File Table (MFT)</strong>: Timestamps of every file operation — find deleted malware by $MFT entry even after deletion</li><li><strong>Prefetch</strong>: <code>C:\Windows\Prefetch\</code> — records program execution with last-run timestamp and files accessed</li><li><strong>ShimCache / AppCompatCache</strong>: Registry record of every EXE run on the system — even if deleted from disk</li><li><strong>AmCache</strong>: <code>C:\Windows\appcompat\Programs\Amcache.hve</code> — SHA1 hash of recently executed binaries</li><li><strong>Event Log analysis</strong>: <code class="tool">EvtxECmd</code> + <code class="tool">Timeline Explorer</code> (EricZimmerman tools) — parse and timeline event logs</li><li><strong>Recycle Bin</strong>: Deleted files with original path and deletion timestamp in <code>$I</code> and <code>$R</code> files</li><li><strong>LNK files / Jump Lists</strong>: Recent file access history — reveal what the attacker opened or staged</li></ul></div></div>
+
+  <div class="detail-card border-red"><span class="tag ir">IR</span><h3>Active Directory Incident Response</h3><div class="card-sub">AD-wide compromise response — credential reset order, golden ticket invalidation, and Kerberos hardening</div><div class="card-body"><ul class="card-list"><li><strong>Confirm scope first</strong>: Use BloodHound on current AD snapshot to map what the attacker could reach from compromised accounts</li><li><strong>krbtgt rotation</strong>: MUST rotate TWICE with &ge;10 hours between rotations — single rotation does not invalidate all golden tickets</li><li><strong>DA reset order</strong>: Reset Domain Admins, then Enterprise Admins, then built-in Administrator — in that order</li><li><strong>DPAPI domain backup key</strong>: If attacker had DCSync, they have the backup key — all user secrets encrypted with it are compromised</li><li><strong>Trust relationships</strong>: Review all domain trusts — attacker may have added rogue trusts for persistent access</li><li><strong>ADCS audit</strong>: Check for newly issued certificates, template modifications, new CA installations post-compromise</li><li><strong>Tool</strong>: <code class="tool">PingCastle</code> — quick AD health and security posture assessment post-IR</li></ul></div></div>
+
+  <div class="detail-card border-red"><span class="tag ir">IR</span><h3>Cloud IR — Entra ID &amp; M365</h3><div class="card-sub">Responding to cloud identity compromise — token revocation, app audit, and CAP hardening</div><div class="card-body"><ul class="card-list"><li><strong>Revoke all sessions</strong>: <code>Revoke-MgUserSignInSession</code> — kills all active tokens including refresh tokens</li><li><strong>App registration audit</strong>: Check for new app registrations and consent grants since compromise window — attacker may have registered backdoor app</li><li><strong>OAuth consent grants</strong>: Review all delegated permissions — attacker abuses consent for persistent mail/file access that survives password reset</li><li><strong>Unified Audit Log</strong>: Enable if not already — captures sign-ins, mail access, SharePoint activity. Requires E3/E5 license</li><li><strong>Microsoft Entra ID Protection</strong>: Review risk detections — atypical travel, anonymous IP, malware-linked — correlate with your incident timeline</li><li><strong>Conditional Access gaps</strong>: Audit CAPs for exclusions, legacy auth allowances, and unprotected apps — close the path used by attacker</li><li><strong>Passkey/FIDO2 audit</strong>: Check for newly enrolled authenticators — attacker may have registered their own MFA device</li></ul></div></div>
+
+  <div class="detail-card border-red"><span class="tag ir">IR</span><h3>Ransomware-Specific Response</h3><div class="card-sub">Ransomware IR is distinct — speed, backup integrity, and legal considerations are paramount</div><div class="card-body"><ul class="card-list"><li><strong>Immediate actions</strong>: Network segment (not full shutdown) — preserve forensic evidence while preventing spread</li><li><strong>Identify strain</strong>: <code class="tool">ID Ransomware</code> (nomoreransom.org) — upload note/encrypted file to identify variant, check for decryptor</li><li><strong>Backup validation</strong>: Test backup integrity IMMEDIATELY — ransomware groups often target backups first (Veeam, shadow copies)</li><li><strong>Do NOT pay without legal advice</strong>: OFAC sanctions may apply to some ransomware groups — paying may be illegal</li><li><strong>Pre-encryption activity</strong>: Look for data exfiltration before encryption — "double extortion" means backup recovery doesn't prevent leaks</li><li><strong>Patient zero</strong>: Usually phishing or exposed RDP — trace to initial access for remediation</li><li><strong>Cyber insurance</strong>: Notify immediately — policies have strict notification windows, non-compliance voids coverage</li></ul></div></div>
+</div>
+
+<div class="separator"></div>
+<!-- ==================== THREAT HUNTING ==================== -->
+<div class="section-header"><h2><span>//</span> Threat <span class="lime">Hunting</span></h2><p class="section-desc">Proactive hunting for adversaries that evaded automated detection. Hypothesis-driven investigation using knowledge of adversary TTPs to find what rules missed.</p></div>
+
+<div class="details-grid">
+  <div class="detail-card border-lime"><span class="tag hunt">HUNT</span><h3>Hunt Methodology</h3><div class="card-sub">Structured approach to proactive threat hunting — intelligence-driven, hypothesis-based, data-validated</div><div class="card-body"><ul class="card-list"><li><strong>1. Intelligence input</strong>: What TTPs are actors targeting your sector using? Use CTI reports, ISAC alerts, recent IR findings</li><li><strong>2. Hypothesis formation</strong>: "If APT29 is in our environment, we would expect to see OAuth token theft patterns in sign-in logs"</li><li><strong>3. Data collection</strong>: Identify which log sources support the hypothesis — ensure they're being collected</li><li><strong>4. Hunt execution</strong>: Run queries, analyze results, pivot on findings. Document every pivot</li><li><strong>5. New detection</strong>: Every hunt should produce either a finding OR a new detection rule for the pattern investigated</li><li><strong>Frequency</strong>: Weekly structured hunts aligned to threat intel; ad-hoc after major CVE or industry breach</li><li><strong>Tool</strong>: <code class="tool">ThreatHunter-Playbook</code> (OTRF) — community hunt playbooks with query templates</li></ul></div></div>
+
+  <div class="detail-card border-lime"><span class="tag hunt">HUNT</span><h3>Hunt: C2 Beaconing</h3><div class="card-sub">Detect regular callback patterns that signature-based rules miss</div><div class="card-body"><ul class="card-list"><li><strong>Beaconing signature</strong>: Connections to same destination at regular intervals — even with jitter, statistical patterns persist</li><li><strong>RITA (Real Intelligence Threat Analytics)</strong>: Automated beaconing detection via connection regularity scoring</li><li><strong>Zeek conn.log analysis</strong>: Group by src/dst pair, calculate interval deviation — low deviation = beaconing</li><li><strong>Long-connection hunting</strong>: HTTP connections &gt;60s with low byte count = potential interactive C2</li><li><strong>JA3 hunting</strong>: Correlate JA3 fingerprints against known C2 tool signatures (CS default JA3 is well-known)</li><li><strong>DNS beaconing</strong>: Regular low-TTL queries to same domain — even if domain resolves, pattern is suspicious</li><li><strong>Splunk hunt</strong>: <code>| eventstats count, avg(bytes) as avg_bytes by src, dest | where count&gt;10 AND avg_bytes&lt;1000</code></li></ul></div></div>
+
+  <div class="detail-card border-lime"><span class="tag hunt">HUNT</span><h3>Hunt: Living Off the Land</h3><div class="card-sub">Find attacker abuse of legitimate Windows tools and built-in binaries</div><div class="card-body"><ul class="card-list"><li><strong>LOLBin baseline</strong>: Know which LOLBins are legitimately used in your environment — rundll32 calling COM objects is normal; calling URLs is not</li><li><strong>PowerShell hunting</strong>: Encoded commands (-enc flag), download cradles (Net.WebClient, Invoke-Expression), bypass flags</li><li><strong>mshta / wscript / cscript</strong>: Unusual parent processes or network connections from these binaries</li><li><strong>certutil</strong>: Network connections from certutil.exe = high confidence IOA for download activity</li><li><strong>Process lineage</strong>: Office → PowerShell, Explorer → cmd → PowerShell are high-risk parent-child chains</li><li><strong>WMIC</strong>: Remote WMI execution creates WmiPrvSE.exe child processes on target — hunt parent-child chains from WMI</li><li><strong>MSBuild / InstallUtil</strong>: Spawning network connections or executing shellcode in .NET context</li></ul></div></div>
+
+  <div class="detail-card border-lime"><span class="tag hunt">HUNT</span><h3>Hunt: Credential Theft</h3><div class="card-sub">Detect LSASS access, Kerberoasting, and credential-based lateral movement</div><div class="card-body"><ul class="card-list"><li><strong>LSASS access (Event 10)</strong>: GrantedAccess flags 0x1FFFFF, 0x1010, 0x0410 = dump attempts. Exclude known AV/EDR process names</li><li><strong>Kerberoasting</strong>: Event 4769 with ticket encryption type 0x17 (RC4) for service accounts — should be AES only</li><li><strong>Password spraying</strong>: Multiple 4625 failures from same source across many accounts in short window</li><li><strong>DPAPI abuse</strong>: Unusual process accessing CryptProtectData / CryptUnprotectData on another user's DPAPI keys</li><li><strong>Credential manager</strong>: Rundll32 keymgr.dll or vaultcmd.exe with no user context = automated credential harvesting</li><li><strong>DCSync</strong>: Event 4662 with replicating directory changes right + source is not a DC IP/hostname</li><li><strong>AS-REP Roasting</strong>: Event 4768 with RC4 pre-auth disabled accounts — check for unusual service ticket requests</li></ul></div></div>
+
+  <div class="detail-card border-lime"><span class="tag hunt">HUNT</span><h3>Hunt: Persistence Mechanisms</h3><div class="card-sub">Find attacker-installed persistence that survived initial incident response</div><div class="card-body"><ul class="card-list"><li><strong>Autoruns baseline</strong>: Collect Autoruns output across fleet with <code class="tool">AutorunsToWinEventLog</code> — diff against known-good baseline</li><li><strong>Scheduled task hunting</strong>: New tasks, tasks with encoded PowerShell in actions, tasks with unusual authors or paths</li><li><strong>Service hunting</strong>: Services with non-standard paths, services pointing to user-writable directories, new services</li><li><strong>Registry Run keys</strong>: Sysmon Event 13 monitoring HKCU/HKLM Run keys — especially from user context</li><li><strong>WMI subscriptions</strong>: Query <code>Get-WMIObject __FilterToConsumerBinding</code> — any subscription not in your baseline is suspicious</li><li><strong>COM hijacking</strong>: HKCU CLSIDs that shadow HKLM entries — especially InprocServer32 pointing to user-writable paths</li><li><strong>DLL sideloads</strong>: Process Monitor "NAME NOT FOUND" entries for DLLs in writable paths — especially from new processes</li></ul></div></div>
+
+  <div class="detail-card border-lime"><span class="tag hunt">HUNT</span><h3>Atomic Red Team</h3><div class="card-sub">Open-source library of adversary technique tests — validate detection coverage empirically</div><div class="card-body"><ul class="card-list"><li><strong>Repository</strong>: <code class="tool">github.com/redcanaryco/atomic-red-team</code> — 1000+ tests mapped to MITRE ATT&amp;CK</li><li><strong>Invoke-AtomicRedTeam</strong>: PowerShell framework to execute atomics and verify prerequisites</li><li><strong>Workflow</strong>: Run atomic → check SIEM for alert → if no alert, fix detection → document coverage</li><li><strong>Caldera</strong>: MITRE's adversary emulation platform — chain atomics into full attack scenarios with autonomous agents</li><li><strong>Stratus Red Team</strong>: Cloud-specific ATT&amp;CK tests for AWS, Azure, GCP — validate cloud detection coverage</li><li><strong>Purple team cadence</strong>: Monthly atomic runs on key techniques; quarterly full chain emulations with red team</li><li><strong>Safe execution</strong>: Run in dedicated test environment or use cleanup commands — some atomics are destructive</li></ul></div></div>
+</div>
+
+<div class="separator"></div>
+
+<!-- ==================== IDENTITY & ACCESS SECURITY ==================== -->
+<div class="section-header"><h2><span>//</span> Identity <span class="indigo">&amp;</span> Access <span class="purple">Security</span></h2><p class="section-desc">Identity is the new perimeter. Every credential compromise bypasses network controls. Hardening identity systems is the highest-ROI defensive investment for most organizations.</p></div>
+
+<div class="details-grid">
+  <div class="detail-card border-indigo"><span class="tag identity">IDENTITY</span><h3>Multi-Factor Authentication</h3><div class="card-sub">MFA tiers — not all MFA is equal. FIDO2 defeats AitM; TOTP does not.</div><div class="card-body"><ul class="card-list"><li><strong>FIDO2 / Passkeys (phishing-resistant)</strong>: Hardware token (YubiKey) or device-bound passkey — cryptographically bound to domain, defeats AitM/EvilGinx</li><li><strong>Windows Hello for Business</strong>: Device-bound phishing-resistant credential — preferred for Windows endpoints</li><li><strong>Certificate-based Authentication</strong>: Smart card / virtual smart card — phishing-resistant, device-bound</li><li><strong>TOTP / Authenticator app (vulnerable to AitM)</strong>: Easily bypassed by EvilGinx-style reverse proxy — better than nothing</li><li><strong>SMS / voice (weakest)</strong>: SIM swap, SS7 attacks, social engineering — use only as last resort fallback</li><li><strong>MFA fatigue</strong>: Attackers spam push notifications until user accepts — enable number matching and additional context</li><li><strong>Priority targets</strong>: Enable phishing-resistant MFA for all privileged accounts first — then enforce broadly via Conditional Access</li></ul></div></div>
+
+  <div class="detail-card border-indigo"><span class="tag identity">IDENTITY</span><h3>Privileged Access Management</h3><div class="card-sub">Protect, monitor, and govern privileged accounts — the keys to your kingdom</div><div class="card-body"><ul class="card-list"><li><strong>Administrative tiering</strong>: Tier 0 (DC/CA/PKI), Tier 1 (servers), Tier 2 (workstations) — strict credential isolation between tiers</li><li><strong>Privileged Access Workstations (PAW)</strong>: Dedicated hardened devices for admin tasks — no email, no browsing, no untrusted software</li><li><strong>Just-In-Time (JIT) access</strong>: PIM/Azure Privileged Identity Management — elevate only when needed, time-boxed, requires justification</li><li><strong>Just-Enough-Access (JEA)</strong>: PowerShell constrained runspaces limiting admin to specific cmdlets — no interactive shell</li><li><strong>Password vaulting</strong>: CyberArk, BeyondTrust, Delinea — rotate privileged passwords automatically, session recording</li><li><strong>LAPS (Local Admin Password Solution)</strong>: Unique local admin password per machine — stops lateral movement via shared local creds</li><li><strong>Protected Users group</strong>: Prevents Kerberos delegation, NTLM auth, and credential caching for high-priv accounts</li></ul></div></div>
+
+  <div class="detail-card border-indigo"><span class="tag identity">IDENTITY</span><h3>Active Directory Hardening</h3><div class="card-sub">Reduce the AD attack surface — the primary target in 90% of enterprise breaches</div><div class="card-body"><ul class="card-list"><li><strong>Disable legacy authentication</strong>: Block NTLM where possible; force Kerberos. Monitor for RC4 ticket requests</li><li><strong>AdminSDHolder</strong>: Audit members of protected groups — any unexpected account with AdminCount=1 is suspicious</li><li><strong>Kerberos delegation</strong>: Audit unconstrained delegation (golden ticket amplifier) — restrict or eliminate where possible</li><li><strong>Account hygiene</strong>: Disable unused accounts, clean up stale service accounts, enforce password policies</li><li><strong>Kerb pre-authentication</strong>: Ensure ALL accounts have pre-auth required — AS-REP roastable accounts are an easy win for attackers</li><li><strong>ADCS hardening</strong>: Run <code class="tool">Locksmith</code> — fix ESC1-ESC8 misconfigurations, restrict template enrollment rights</li><li><strong>Audit LDAP queries</strong>: Enable LDAP diagnostic logging to detect enumeration — BloodHound-style queries generate distinctive patterns</li></ul></div></div>
+
+  <div class="detail-card border-indigo"><span class="tag identity">IDENTITY</span><h3>Conditional Access Policies</h3><div class="card-sub">Zero trust access control — enforce context-based policies for every authentication</div><div class="card-body"><ul class="card-list"><li><strong>Baseline policies</strong>: Require MFA for all users; block legacy authentication; require compliant/hybrid-joined devices for sensitive apps</li><li><strong>Named locations</strong>: Define trusted IPs for relaxed policies; enforce stricter controls from unknown locations</li><li><strong>Sign-in risk</strong>: Integrate Entra ID Protection risk signals — block high-risk sign-ins, require step-up auth for medium risk</li><li><strong>Device compliance</strong>: Require Intune-managed and compliant device for access to sensitive resources</li><li><strong>Phishing-resistant MFA</strong>: Enforce FIDO2/WHfB for all admin roles, VPN access, and sensitive applications</li><li><strong>Audit exclusions</strong>: Every CAP exclusion is a potential bypass — minimize, document, and review exclusions quarterly</li><li><strong>Report-only mode</strong>: Test CAPs in report-only before enforcing — measure impact on sign-ins before blocking users</li></ul></div></div>
+
+  <div class="detail-card border-indigo"><span class="tag identity">IDENTITY</span><h3>Entra ID / Azure AD Security</h3><div class="card-sub">Cloud identity hardening for Microsoft 365 and Azure environments</div><div class="card-body"><ul class="card-list"><li><strong>Global Admin minimization</strong>: Maximum 5 Global Admins, all with FIDO2 hardware keys, dedicated cloud-only accounts</li><li><strong>PIM for all privileged roles</strong>: No permanent role assignments for privileged roles — all require PIM activation with justification</li><li><strong>App consent policies</strong>: Restrict user consent — require admin approval for apps requesting sensitive permissions</li><li><strong>External collaboration</strong>: Restrict guest access, limit B2B invitations, audit existing guest accounts quarterly</li><li><strong>Secure Score</strong>: Microsoft Secure Score — track security posture and prioritize hardening actions</li><li><strong>Graph activity logging</strong>: Enable MicrosoftGraphActivityLogs for post-compromise investigation — default not enabled</li><li><strong>Emergency access accounts</strong>: Two break-glass accounts with FIDO2 keys — stored separately, excluded from all CAPs, monitored for use</li></ul></div></div>
+
+  <div class="detail-card border-indigo"><span class="tag identity">IDENTITY</span><h3>Password Security</h3><div class="card-sub">Password policy, breach monitoring, and resistance to credential attacks</div><div class="card-body"><ul class="card-list"><li><strong>Banned password lists</strong>: Microsoft Entra Password Protection — blocks commonly used passwords and custom banned terms (company name, seasons, years)</li><li><strong>Credential breach monitoring</strong>: <code class="tool">Have I Been Pwned API</code> — check new/changed passwords against known breach databases</li><li><strong>Password length &gt; complexity</strong>: NIST 800-63B recommends long passphrases over complex-but-short passwords</li><li><strong>Eliminate periodic rotation</strong>: NIST guidance — only rotate on confirmed compromise, not arbitrary schedule. Rotation breeds predictable patterns</li><li><strong>Password manager policy</strong>: Mandate password manager use — stops reuse, enables long random passwords</li><li><strong>Spray detection</strong>: Alert on 5+ distinct users with failed auth from same IP within 1 hour — typical spray pattern</li></ul></div></div>
+</div>
+
+<div class="separator"></div>
+<!-- ==================== NETWORK SECURITY ==================== -->
+<div class="section-header"><h2><span>//</span> Network <span class="lime">Security</span> Controls</h2><p class="section-desc">Network segmentation, traffic inspection, and protocol-level controls. Every east-west movement the attacker makes should cross a control point you monitor.</p></div>
+
+<div class="details-grid">
+  <div class="detail-card border-lime"><span class="tag network">NETWORK</span><h3>Network Segmentation</h3><div class="card-sub">Limit blast radius through logical and physical network separation</div><div class="card-body"><ul class="card-list"><li><strong>VLAN segmentation</strong>: User, server, management, guest, IoT — each segment with appropriate firewall rules between</li><li><strong>Micro-segmentation</strong>: Host-based firewall policies that allow only needed application flows — stops east-west movement even within same VLAN</li><li><strong>Crown jewel isolation</strong>: DCs, CA servers, backup infrastructure — separate VLAN with strict ACLs, jump host access only</li><li><strong>Zero Trust Network Access (ZTNA)</strong>: Application-layer access control — verify user, device, and context before permitting each connection</li><li><strong>Deny by default</strong>: Whitelist required flows, deny all else — not the common "deny what's known bad" approach</li><li><strong>Egress filtering</strong>: Outbound connections should be explicitly allowed — not default-permit. Block direct-to-internet from servers</li><li><strong>SMB firewall</strong>: Block TCP 445 between workstations — prevents PsExec lateral movement without legitimate admin need</li></ul></div></div>
+
+  <div class="detail-card border-lime"><span class="tag network">NETWORK</span><h3>DNS Security</h3><div class="card-sub">DNS is used in nearly every attack — logging, filtering, and monitoring are essential</div><div class="card-body"><ul class="card-list"><li><strong>DNS logging</strong>: Log all DNS queries with requesting process name (Sysmon Event 22) — enables C2 and DGA detection</li><li><strong>DNS sinkholes</strong>: Redirect malicious domains to internal sinkhole IP — log and alert on connections, block C2 callback</li><li><strong>Protective DNS</strong>: Cisco Umbrella, Cloudflare Gateway, Quad9 — filter malicious domains at resolver level</li><li><strong>DNS-over-HTTPS (DoH) control</strong>: Block or proxy DoH — attackers use DoH to bypass DNS monitoring (Cloudflare, Google)</li><li><strong>Response Policy Zones (RPZ)</strong>: BIND/Infoblox — block or redirect by domain list at DNS server level</li><li><strong>DGA detection</strong>: High-entropy domain names, NX domain storms — indicators of malware beaconing with domain generation algorithm</li><li><strong>Internal DNS consistency</strong>: Use internal DNS for all lookups — prevents split-brain DNS attacks</li></ul></div></div>
+
+  <div class="detail-card border-lime"><span class="tag network">NETWORK</span><h3>Email Security Hardening</h3><div class="card-sub">Technical controls to reduce phishing delivery success rates</div><div class="card-body"><ul class="card-list"><li><strong>SPF</strong>: Publish strict SPF record — <code>v=spf1 include:... -all</code> (hard fail). Reject unauthorized senders</li><li><strong>DKIM</strong>: Cryptographically sign all outbound email — validates sender authenticity, prevents header tampering</li><li><strong>DMARC</strong>: <code>v=DMARC1; p=reject; rua=mailto:...</code> — enforce and receive aggregate reports on spoofing attempts</li><li><strong>BIMI</strong>: Brand Indicators for Message Identification — verified logo display in clients signals legitimate email</li><li><strong>Attachment sandboxing</strong>: Detonate attachments before delivery — catch macro-less payloads, LNK files, ISO files</li><li><strong>URL rewriting + time-of-click scanning</strong>: Rescan URLs when clicked — catches URLs that were clean at delivery</li><li><strong>Anti-spoofing</strong>: Block emails from external that impersonate internal domains — common BEC vector</li></ul></div></div>
+
+  <div class="detail-card border-lime"><span class="tag network">NETWORK</span><h3>Web Proxy &amp; SSL Inspection</h3><div class="card-sub">Inspect encrypted traffic and control web access to detect and block C2 channels</div><div class="card-body"><ul class="card-list"><li><strong>SSL/TLS inspection</strong>: Decrypt HTTPS traffic for malware scanning, DLP, and C2 detection — required to inspect modern attacks</li><li><strong>URL categorization</strong>: Block uncategorized, newly-registered, and parked domains — attackers use these for C2</li><li><strong>Application control</strong>: Block unsanctioned cloud storage, anonymizers, and proxies — DLP and C2 channel control</li><li><strong>User-Agent filtering</strong>: Alert or block curl, python-requests, Invoke-WebRequest user-agents from non-dev systems</li><li><strong>Domain age checks</strong>: Alert on connections to domains registered less than 30 days ago — freshly-registered C2 infrastructure</li><li><strong>JA3 fingerprinting at proxy</strong>: Detect known C2 frameworks by TLS client hello fingerprint</li><li><strong>Egress proxy enforcement</strong>: Force all traffic through proxy — block direct internet TCP 80/443 from endpoints</li></ul></div></div>
+
+  <div class="detail-card border-lime"><span class="tag network">NETWORK</span><h3>Firewall &amp; IDS/IPS</h3><div class="card-sub">Perimeter and internal controls for traffic filtering and intrusion detection</div><div class="card-body"><ul class="card-list"><li><strong>Suricata / Snort</strong>: Network IDS/IPS — Emerging Threats (ET) Open rules cover C2 frameworks, exploit kits, malware callbacks</li><li><strong>Next-Gen Firewall (NGFW)</strong>: Palo Alto, Fortinet, CheckPoint — application-aware rules, SSL inspection, threat prevention</li><li><strong>Internal IDS placement</strong>: Span ports at core switch — east-west traffic visibility for lateral movement detection</li><li><strong>Geo-blocking</strong>: Block inbound from countries with no business justification — reduces attack surface for credential stuffing</li><li><strong>ET Ruleset tuning</strong>: Enable, test, then tune ET rules — ET Pro provides faster updates and more coverage than Open</li><li><strong>Alert on new C2 frameworks</strong>: When new C2 tools are released publicly (Havoc, Brute Ratel), add specific detection rules</li></ul></div></div>
+
+  <div class="detail-card border-lime"><span class="tag network">NETWORK</span><h3>VPN &amp; Remote Access Security</h3><div class="card-sub">Secure remote access as an initial access vector — heavily targeted by threat actors</div><div class="card-body"><ul class="card-list"><li><strong>MFA enforcement</strong>: All VPN must require MFA — single-factor VPN is direct internal access for credential stuffers</li><li><strong>Certificate-based auth</strong>: Client certificate pinned to device — prevents credential spray from attacker-controlled devices</li><li><strong>Split tunneling policy</strong>: All traffic through VPN in high-security environments — prevents attacker using victim's VPN tunnel while browsing attacker infrastructure</li><li><strong>VPN authentication logging</strong>: Log all success AND failure events — baseline normal usage patterns</li><li><strong>Geo-anomaly detection</strong>: Alert on VPN logins from countries the user never uses — rapid geographic changes are impossible travel</li><li><strong>Session limits</strong>: Concurrent session limits — one active session per user, new login terminates old session</li></ul></div></div>
+</div>
+
+<div class="separator"></div>
+
+<!-- ==================== HARDENING ==================== -->
+<div class="section-header"><h2><span>//</span> Security <span class="orange">Hardening</span></h2><p class="section-desc">Reduce attack surface through configuration management, policy enforcement, and defense-in-depth controls. Every unnecessary feature is potential attack surface.</p></div>
+
+<div class="details-grid">
+  <div class="detail-card border-orange"><span class="tag harden">HARDEN</span><h3>Windows Endpoint Hardening</h3><div class="card-sub">CIS benchmark implementation, attack surface reduction, and LOLBin restriction</div><div class="card-body"><ul class="card-list"><li><strong>Attack Surface Reduction (ASR) rules</strong>: Enable all 16 ASR rules in audit first — then block mode. Key rules: block Office spawning processes, block macro downloads, block credential theft from LSASS</li><li><strong>Credential Guard</strong>: Hypervisor-protected LSASS — prevents pass-the-hash and DPAPI attacks against domain credentials</li><li><strong>Device Guard / WDAC</strong>: Kernel-mode code integrity — only signed drivers, strong code integrity policy. Kills BYOVD driver attacks</li><li><strong>PowerShell Constrained Language Mode</strong>: Restrict PS to safe subset — block Add-Type, New-Object, and reflection</li><li><strong>Script Block Logging</strong>: Enable 4104 — captures all PS script content, even from memory (ConvertTo-SecureString etc.)</li><li><strong>AppLocker</strong>: Enforce application whitelisting — block execution from user-writable paths (AppData, Temp, Downloads)</li><li><strong>Disable macros</strong>: Block all VBA macros or restrict to digitally signed only — Group Policy controls via Trust Center settings</li></ul></div></div>
+
+  <div class="detail-card border-orange"><span class="tag harden">HARDEN</span><h3>Windows Defender Configuration</h3><div class="card-sub">Maximize built-in Windows Defender capabilities — it's more powerful than most realize</div><div class="card-body"><ul class="card-list"><li><strong>Tamper Protection</strong>: Prevents local modification of Defender settings — enforce via Intune or Microsoft Endpoint Manager</li><li><strong>Cloud-delivered protection</strong>: Enable at highest blocking level — real-time ML cloud scoring for unknown samples</li><li><strong>Automatic sample submission</strong>: Enable — submits suspicious samples to Microsoft for analysis</li><li><strong>Network protection</strong>: Enable in block mode — prevents connections to malicious domains/IPs at kernel level</li><li><strong>Controlled Folder Access</strong>: Protects common data directories from unauthorized write access — ransomware prevention</li><li><strong>Exploit protection</strong>: Enable ASLR (mandatory), CFG, DEP, SEHOP for all processes — process-level exploit mitigations</li><li><strong>Safe Links / Safe Attachments</strong>: MDE for Office — detonate attachments and rewrite URLs in real time</li></ul></div></div>
+
+  <div class="detail-card border-orange"><span class="tag harden">HARDEN</span><h3>ADCS Hardening</h3><div class="card-sub">Active Directory Certificate Services is one of the most dangerous misconfiguration areas in enterprise AD</div><div class="card-body"><ul class="card-list"><li><strong>Locksmith</strong>: Run <code class="tool">Locksmith</code> — identifies ESC1-ESC8 vulnerabilities in certificate templates automatically</li><li><strong>ESC1 fix</strong>: Remove "Supply in the Request" (ENROLLEE_SUPPLIES_SUBJECT) from non-CA templates — prevents SAN abuse</li><li><strong>ESC4 fix</strong>: Remove write permissions on certificate templates for non-admin users — prevents template modification</li><li><strong>CA audit logging</strong>: Enable all CA audit events — certificate issuance, template changes, CA start/stop</li><li><strong>Restrict enrollment agents</strong>: Limit who can enroll on behalf of others — enrollment agent abuse enables impersonation</li><li><strong>ADCS Tier 0</strong>: CA servers are Tier 0 assets — same access controls as domain controllers</li><li><strong>Certificate monitoring</strong>: Alert on certificates issued with SAN containing privileged account UPNs, unusual templates, or off-hours issuance</li></ul></div></div>
+
+  <div class="detail-card border-orange"><span class="tag harden">HARDEN</span><h3>LAPS (Local Admin Password Solution)</h3><div class="card-sub">Unique local admin passwords per machine — stops lateral movement via shared local credentials</div><div class="card-body"><ul class="card-list"><li><strong>Windows LAPS (2023+)</strong>: Built-in OS feature replacing legacy LAPS — Azure AD and on-prem AD support, encrypted storage</li><li><strong>Scope</strong>: All domain-joined Windows computers — workstations AND servers</li><li><strong>Password complexity</strong>: Configure 20+ character password with full character set</li><li><strong>Rotation frequency</strong>: Rotate after each admin session, or at minimum every 30 days</li><li><strong>Access audit</strong>: Log all LAPS password retrievals — bulk retrieval is suspicious (attacker sweeping for lateral movement)
+</li><li><strong>Tiered access</strong>: Restrict who can read LAPS passwords — not all helpdesk needs server LAPS passwords</li><li><strong>Why it matters</strong>: Without LAPS, a single shared local admin password lets attackers PtH to every machine in the domain</li></ul></div></div>
+
+  <div class="detail-card border-orange"><span class="tag harden">HARDEN</span><h3>Patch Management</h3><div class="card-sub">Vulnerability remediation prioritized by exploitability, exposure, and asset criticality</div><div class="card-body"><ul class="card-list"><li><strong>CISA KEV</strong>: Known Exploited Vulnerabilities catalog — treat these as P0, patch within 2 weeks regardless of CVSS score</li><li><strong>Exploitation probability</strong>: EPSS score (Exploit Prediction Scoring System) — prioritizes by likelihood of exploitation, not just severity</li><li><strong>Asset criticality</strong>: Internet-facing + Tier 0 = immediate patching. Internal + low criticality = standard SLA</li><li><strong>Emergency patching</strong>: Pre-approved change process for critical CVEs — can't wait for monthly maintenance window when CVSS 9.8 is being exploited</li><li><strong>Patch validation</strong>: Test in staging, confirm in production — especially for Windows security updates that ship with known issues</li><li><strong>Third-party software</strong>: Browsers, PDF readers, Office suites — often more targeted than OS. Automate via Intune/SCCM</li></ul></div></div>
+
+  <div class="detail-card border-orange"><span class="tag harden">HARDEN</span><h3>Backup &amp; Recovery Hardening</h3><div class="card-sub">Ransomware-resistant backup strategy — your last line of defense when all else fails</div><div class="card-body"><ul class="card-list"><li><strong>3-2-1-1-0 rule</strong>: 3 copies, 2 different media, 1 offsite, 1 immutable/offline, 0 errors confirmed by restore testing</li><li><strong>Immutable backups</strong>: Object lock on S3 / Azure Blob — prevents ransomware from deleting or encrypting backups</li><li><strong>Offline backups</strong>: Air-gapped tapes or offline disks — cannot be reached by ransomware spreading through network</li><li><strong>Backup credential isolation</strong>: Backup service accounts in dedicated OU with no regular access — attackers target Veeam/Commvault to destroy backups</li><li><strong>Recovery testing</strong>: Quarterly restore tests — validate RTO/RPO before you need it. Most orgs discover backup failures during incidents</li><li><strong>DR runbook</strong>: Documented step-by-step recovery procedure — under stress, detailed runbooks reduce errors and time-to-recover</li></ul></div></div>
+</div>
+
+<div class="separator"></div>
+<!-- ==================== THREAT INTELLIGENCE ==================== -->
+<div class="section-header"><h2><span>//</span> Threat <span class="sky">Intelligence</span></h2><p class="section-desc">Intelligence drives hunting, detection prioritization, and hardening focus. Operationalize CTI — transform reports into actionable detections and controls.</p></div>
+
+<div class="details-grid">
+  <div class="detail-card border-sky"><span class="tag intel">INTEL</span><h3>Threat Intelligence Platforms</h3><div class="card-sub">Aggregate, correlate, and operationalize threat intelligence from multiple sources</div><div class="card-body"><ul class="card-list"><li><strong>MISP</strong>: Open-source threat intelligence platform — share, consume, and correlate IOCs. STIX/TAXII support. Self-hosted</li><li><strong>OpenCTI</strong>: Open-source CTI platform with MITRE ATT&amp;CK integration — structured threat actor, campaign, and TTP tracking</li><li><strong>ThreatConnect</strong>: Commercial TIP with workflow automation — ingest, analyze, act on intelligence at scale</li><li><strong>Recorded Future</strong>: Commercial — dark web, paste site, and technical data integration. Real-time risk scoring</li><li><strong>ISAC membership</strong>: FS-ISAC, H-ISAC, MS-ISAC — sector-specific threat sharing with peers who see the same threats</li><li><strong>TAXII feeds</strong>: Automated IOC consumption from commercial and community feeds — ingest into SIEM/firewall automatically</li><li><strong>CTI lifecycle</strong>: Collection → processing → analysis → production → dissemination → feedback. Don't stop at collection</li></ul></div></div>
+
+  <div class="detail-card border-sky"><span class="tag intel">INTEL</span><h3>Adversary Tracking</h3><div class="card-sub">Understanding who is targeting your sector and their preferred TTPs</div><div class="card-body"><ul class="card-list"><li><strong>ATT&amp;CK Groups</strong>: <code class="tool">attack.mitre.org/groups</code> — 130+ tracked threat actors with TTPs, tools, and targeted sectors</li><li><strong>Mandiant M-Trends</strong>: Annual report on current threat landscape — dwell time, initial access vectors, targeted sectors</li><li><strong>CrowdStrike Adversary Intelligence</strong>: Adversary tracking with code names — Hurricane (Russian), Panda (Chinese), Kitten (Iranian)</li><li><strong>CISA Advisories</strong>: Free! Nation-state actor TTPs with detection guidance — AA advisories are gold standard</li><li><strong>VirusTotal Intelligence</strong>: Search malware samples by YARA, behavior, imphash — find related samples for actor attribution</li><li><strong>Diamond Model</strong>: Structured framework for adversary characterization — adversary, capability, infrastructure, victim relationships</li></ul></div></div>
+
+  <div class="detail-card border-sky"><span class="tag intel">INTEL</span><h3>Dark Web &amp; Exposure Monitoring</h3><div class="card-sub">Monitor for credential leaks, data dumps, and attack planning against your organization</div><div class="card-body"><ul class="card-list"><li><strong>Have I Been Pwned</strong>: Free domain monitoring — notify on credential exposure in breach databases</li><li><strong>SpyCloud</strong>: Commercial — compromised credential monitoring including infostealer logs. Integrates with SIEM for automated lockout</li><li><strong>Recorded Future</strong>: Dark web forum monitoring, ransomware group tracking, executive/VIP exposure monitoring</li><li><strong>Flare</strong>: Dark web, deep web, and Telegram monitoring for leaked credentials, company data, and threat actor chatter</li><li><strong>Cybersixgill</strong>: Dark web threat intelligence — forum posts, marketplace listings, actor communications</li><li><strong>Brand monitoring</strong>: Alert on newly registered lookalike domains, typosquatted brand names — phishing infrastructure discovery</li><li><strong>GitHub monitoring</strong>: <code class="tool">trufflehog</code>, <code class="tool">gitleaks</code> — scan public repos for accidentally committed credentials and configs</li></ul></div></div>
+
+  <div class="detail-card border-sky"><span class="tag intel">INTEL</span><h3>Malware Analysis</h3><div class="card-sub">Understand threats through sample analysis — extract IOCs, TTPs, and signatures</div><div class="card-body"><ul class="card-list"><li><strong>Static analysis</strong>: <code class="tool">CAPA</code> — extract capabilities from PE files (ATT&amp;CK mapped). <code class="tool">PE-bear</code> / <code class="tool">PEStudio</code> for header analysis</li><li><strong>Dynamic analysis</strong>: <code class="tool">ANY.RUN</code>, <code class="tool">VirusTotal</code>, <code class="tool">Joe Sandbox</code> — online detonation with full behavior report</li><li><strong>Sandbox</strong>: <code class="tool">Cuckoo Sandbox</code> (self-hosted), <code class="tool">CAPE Sandbox</code> — privacy-sensitive samples analyzed internally</li><li><strong>Disassembly</strong>: <code class="tool">Ghidra</code> (free) / <code class="tool">IDA Pro</code> (commercial) — deep binary analysis, C2 extraction, decryption routines</li><li><strong>Debugging</strong>: <code class="tool">x64dbg</code>, <code class="tool">WinDbg</code> — dynamic execution analysis, memory breakpoints, API tracing</li><li><strong>FLOSS</strong>: Mandiant's tool — extract obfuscated strings from malware that a regular strings command misses</li><li><strong>C2 extraction</strong>: Extract hardcoded C2 infrastructure from samples — add to blocklist before deployment</li></ul></div></div>
+</div>
+
+<div class="separator"></div>
+
+<!-- ==================== DECEPTION TECHNOLOGY ==================== -->
+<div class="section-header"><h2><span>//</span> Deception <span class="purple">Technology</span></h2><p class="section-desc">Honeypots, canary tokens, and deceptive credentials give high-fidelity alerts with near-zero false positives. Any interaction is malicious by definition.</p></div>
+
+<div class="details-grid">
+  <div class="detail-card border-purple"><span class="tag deception">DECEPTION</span><h3>Canary Tokens</h3><div class="card-sub">Tripwires embedded in documents, credentials, and files — immediate alert on access</div><div class="card-body"><ul class="card-list"><li><strong>Thinkst Canary Tokens</strong>: Free at <code class="tool">canarytokens.org</code> — Word docs, PDFs, web bugs, AWS keys, DNS tokens, email addresses</li><li><strong>Word/Excel tokens</strong>: Embed in sensitive documents — fires when opened, reveals opener IP and hostname</li><li><strong>Fake AWS keys</strong>: Place in source code, S3 buckets, configuration files — fires on any API call attempt</li><li><strong>DNS tokens</strong>: Fake hostnames in internal documentation — fires on DNS lookup, reveals attacker has read internal docs</li><li><strong>Honey credentials</strong>: Fake accounts in AD with canary passwords — login attempt is instant attacker detection</li><li><strong>Desktop folder canaries</strong>: Fake "passwords.xlsx" and "network_map.pdf" on shared drives — opened = attacker browsing shares</li><li><strong>Detection value</strong>: Near-zero false positive rate — legitimate users don't open fake documents or use fake credentials</li></ul></div></div>
+
+  <div class="detail-card border-purple"><span class="tag deception">DECEPTION</span><h3>Honeypots</h3><div class="card-sub">Fake systems that attract and detect attackers conducting internal reconnaissance</div><div class="card-body"><ul class="card-list"><li><strong>Thinkst Canary</strong>: Commercial hardware/virtual honeypots — realistic Windows, Linux, web, and network device emulation. Alert on any interaction</li><li><strong>OpenCanary</strong>: Free, open-source honeypot — simulates SSH, HTTP, FTP, SNMP, SMB, and other services</li><li><strong>HoneyAD</strong>: Fake AD accounts, computers, and service accounts — activity against honeypot objects = attacker in AD</li><li><strong>Placement strategy</strong>: Scatter across VLANs, mimic real naming conventions, no legitimate reason to connect</li><li><strong>Honey credentials in LSASS</strong>: Inject fake credentials that call home when used — detects credential harvesting from memory</li><li><strong>Network deception platforms</strong>: Attivo (SentinelOne), Illusive — automated deception fabric across the entire network</li></ul></div></div>
+
+  <div class="detail-card border-purple"><span class="tag deception">DECEPTION</span><h3>Active Directory Deception</h3><div class="card-sub">Honey accounts, honey SPNs, and deceptive AD objects that detect enumeration and attacks</div><div class="card-body"><ul class="card-list"><li><strong>Honey users</strong>: Fake privileged-looking accounts (svc_backup, IT_Admin) — any auth attempt is an alert</li><li><strong>Honey computer objects</strong>: Fake DC or server names in AD — Kerberoasting attempt against them reveals attacker</li><li><strong>Honey SPNs</strong>: Service Principal Names on honey accounts — Kerberoast attempt reveals enumeration activity</li><li><strong>Breadcrumb strategy</strong>: Leave hints pointing to honey systems — fake "password file" referencing honey server name</li><li><strong>Honey group members</strong>: Put honey accounts in sensitive groups — any lateral movement attempt to them alerts</li><li><strong>Monitoring requirement</strong>: Honey objects only work if you alert on all authentication attempts against them — zero tolerance for false positives</li></ul></div></div>
+
+  <div class="detail-card border-purple"><span class="tag deception">DECEPTION</span><h3>Canary Files &amp; Data Deception</h3><div class="card-sub">Bait files that trigger alerts when accessed — detect exfiltration attempts and insider threats</div><div class="card-body"><ul class="card-list"><li><strong>DLP canary seeding</strong>: Place realistic-looking fake sensitive files in monitored shares — access triggers DLP alert AND canary token</li><li><strong>Fake credit card data</strong>: Seeded Luhn-valid but non-real card numbers in files — DLP alerts on the data pattern</li><li><strong>Honey API keys</strong>: Valid-format but revoked API keys — any attempt to use them fires an alert via AWS/Azure logging</li><li><strong>Fake password databases</strong>: KeePass-format files with canary tokens inside — opened = attacker found credential files</li><li><strong>Cloud storage canaries</strong>: Files in S3 with server-access logging + canary token — fire on any read access</li></ul></div></div>
+</div>
+
+<div class="separator"></div>
+
+<!-- ==================== CLOUD DEFENSE ==================== -->
+<div class="section-header"><h2><span>//</span> Cloud <span class="azure">Defense</span> Operations</h2><p class="section-desc">Azure/Entra ID, AWS, and GCP defensive controls, detection capabilities, and hardening guidance for cloud-native environments.</p></div>
+
+<div class="details-grid">
+  <div class="detail-card border-blue"><span class="tag cloud">CLOUD</span><h3>Microsoft 365 / Entra ID Defense</h3><div class="card-sub">Detect and respond to cloud identity attacks in Microsoft environments</div><div class="card-body"><ul class="card-list"><li><strong>Entra ID Protection</strong>: Risk-based sign-in policies — block high-risk, require MFA for medium-risk sign-ins automatically</li><li><strong>Unified Audit Log</strong>: Enable for all workloads — Exchange, SharePoint, Teams, Azure AD. 90-day retention (E3), 1 year (E5)</li><li><strong>Advanced Hunting (MDE)</strong>: Cross-workload hunting in security.microsoft.com — correlate identity + endpoint + email + cloud events</li><li><strong>Defender for Cloud Apps (MCAS)</strong>: SaaS visibility, DLP, and anomaly detection across M365 and third-party apps</li><li><strong>Email security (MDO)</strong>: Safe Links, Safe Attachments, anti-phishing, spoof intelligence — enable all in Standard/Strict preset</li><li><strong>Alert on app consent</strong>: Alert on new OAuth app consent grants — especially for mail.read, files.readwrite permissions</li><li><strong>Legacy auth blocking</strong>: Block all legacy authentication (IMAP, POP3, SMTP AUTH, EWS without modern auth) — major attack vector</li></ul></div></div>
+
+  <div class="detail-card border-blue"><span class="tag cloud">CLOUD</span><h3>AWS Defense</h3><div class="card-sub">CloudTrail, GuardDuty, Security Hub — detecting and responding to AWS attacks</div><div class="card-body"><ul class="card-list"><li><strong>CloudTrail</strong>: Enable organization-wide, multi-region CloudTrail to S3 with integrity validation — foundation of AWS logging</li><li><strong>GuardDuty</strong>: Enable in every region — threat detection for IAM anomalies, network threats, S3 threats. $3/1M events</li><li><strong>Security Hub</strong>: Aggregate GuardDuty + Macie + Inspector + Config findings — centralized security posture management</li><li><strong>IAM Access Analyzer</strong>: Detects overly permissive policies and external access to resources — run continuously</li><li><strong>SCPs (Service Control Policies)</strong>: Deny dangerous actions organization-wide — block creation of new IAM users, prevent disabling CloudTrail</li><li><strong>Config rules</strong>: Enforce compliance continuously — alert on MFA disabled for root, unrestricted security groups, public S3 buckets</li><li><strong>CloudTrail Insights</strong>: Anomaly detection on API call rate — detect credential abuse and scanning activity</li></ul></div></div>
+
+  <div class="detail-card border-blue"><span class="tag cloud">CLOUD</span><h3>Cloud Misconfiguration Management</h3><div class="card-sub">Continuously assess cloud posture against security benchmarks and detect configuration drift</div><div class="card-body"><ul class="card-list"><li><strong>Defender for Cloud (CSPM)</strong>: Multi-cloud posture management — CIS benchmark scoring for Azure, AWS, GCP. Attack path analysis</li><li><strong>Prowler</strong>: Open-source cloud security assessment — AWS, Azure, GCP. 300+ checks, CIS/PCI/HIPAA mappings</li><li><strong>CloudFox</strong>: Attackers' view of your cloud environment — find exploitable IAM paths, exposed services, secrets</li><li><strong>ScoutSuite</strong>: Multi-cloud security auditing — generates HTML report with findings per service</li><li><strong>Checkov</strong>: IaC security scanning — Terraform, CloudFormation, Kubernetes manifests. Shift-left cloud security</li><li><strong>CSPM key findings</strong>: Public storage buckets, overpermissioned IAM roles, missing MFA for cloud console, unencrypted databases</li></ul></div></div>
+
+  <div class="detail-card border-blue"><span class="tag cloud">CLOUD</span><h3>Kubernetes Security</h3><div class="card-sub">Container and orchestration security — network policies, RBAC, admission controls, and runtime protection</div><div class="card-body"><ul class="card-list"><li><strong>RBAC hardening</strong>: Least-privilege roles — no cluster-admin bindings for workloads. Audit all ClusterRoleBindings</li><li><strong>Network policies</strong>: Default-deny ingress/egress, whitelist required connections — prevents pod-to-pod lateral movement</li><li><strong>Pod Security Standards (PSS)</strong>: Replace deprecated PSPs — enforce restricted policy for all namespaces</li><li><strong>Falco</strong>: Open-source runtime security — syscall-based detection for container breakout, privilege escalation, suspicious behavior</li><li><strong>Admission controllers</strong>: OPA Gatekeeper / Kyverno — policy enforcement at admission time, prevents non-compliant workloads</li><li><strong>Secret management</strong>: External Secrets Operator + HashiCorp Vault / AWS Secrets Manager — never store secrets in ConfigMaps</li><li><strong>Image scanning</strong>: Trivy / Grype in CI/CD pipeline — block images with critical CVEs before deployment</li></ul></div></div>
+</div>
+
+<div class="separator"></div>
+
+<!-- ==================== VULNERABILITY MANAGEMENT ==================== -->
+<div class="section-header"><h2><span>//</span> Vulnerability <span class="orange">Management</span></h2><p class="section-desc">Risk-prioritized vulnerability identification and remediation. CVSS scores alone are insufficient — contextualize with exposure, exploitability, and asset criticality.</p></div>
+
+<div class="details-grid">
+  <div class="detail-card border-orange"><span class="tag vuln">VULN</span><h3>Vulnerability Scanning</h3><div class="card-sub">Continuous asset discovery and vulnerability identification across the environment</div><div class="card-body"><ul class="card-list"><li><strong>Tenable Nessus / Tenable.io</strong>: Industry standard — agent-based for internal, credentialed scans for accurate findings</li><li><strong>Qualys VMDR</strong>: Cloud-based vulnerability management with asset inventory — prioritization by TruRisk score</li><li><strong>Rapid7 InsightVM</strong>: Risk-prioritized VM with real-time exposure scoring — integrates with EDR for agent data</li><li><strong>OpenVAS / Greenbone</strong>: Free, open-source — Greenbone Community Edition for smaller organizations</li><li><strong>Nuclei</strong>: Template-based vulnerability scanner — massive community template library for specific CVEs</li><li><strong>Scan cadence</strong>: Weekly credentialed internal scans; daily for internet-facing; continuous for cloud assets</li><li><strong>Credentialed scanning</strong>: Always use credentials — unauthenticated scans miss 80% of findings. Domain account with local admin rights</li></ul></div></div>
+
+  <div class="detail-card border-orange"><span class="tag vuln">VULN</span><h3>Vulnerability Prioritization</h3><div class="card-sub">Cut through CVSS noise — focus remediation on what attackers are actually exploiting</div><div class="card-body"><ul class="card-list"><li><strong>CISA KEV first</strong>: Known Exploited Vulnerabilities catalog — patch these within 2 weeks regardless of internal scoring</li><li><strong>EPSS score</strong>: Exploit Prediction Scoring System — probability of exploitation within next 30 days. Better signal than CVSS alone</li><li><strong>Internet-facing multiplier</strong>: A CVSS 7.0 on internet-facing system &gt; CVSS 9.8 on isolated internal host for business risk</li><li><strong>Threat actor context</strong>: If CTI shows actors targeting your sector are using CVE-XXXX, elevate priority regardless of CVSS</li><li><strong>Asset criticality</strong>: Maintain CMDB with criticality scores — vulnerability risk = CVSS × exploitability × asset value × exposure</li><li><strong>SLA enforcement</strong>: Critical/internet-facing: 7 days. Critical/internal: 30 days. High: 60 days. Medium: 90 days. Track SLA compliance</li></ul></div></div>
+
+  <div class="detail-card border-orange"><span class="tag vuln">VULN</span><h3>Attack Surface Management</h3><div class="card-sub">Continuously discover and monitor all internet-facing assets — know your external attack surface</div><div class="card-body"><ul class="card-list"><li><strong>External ASM tools</strong>: Censys, Shodan, EASM platforms — discover all assets your organization exposes to the internet</li><li><strong>Shadow IT discovery</strong>: Many internet-facing assets are unknown to security — cloud accounts, developer test environments, forgotten subdomains</li><li><strong>Certificate monitoring</strong>: <code class="tool">crt.sh</code>, <code class="tool">certstream</code> — monitor CT logs for new certificates issued to your domain names</li><li><strong>Subdomain monitoring</strong>: Alert on new subdomains — especially on cloud providers (S3, Azure Blob, GitHub Pages)</li><li><strong>Passive DNS</strong>: Track historical DNS records — find infrastructure your attackers already know about that you forgot</li><li><strong>Exposed service alerting</strong>: New open ports on known assets, new assets appearing in Shodan results — automated alerts</li></ul></div></div>
+</div>
+
+<div class="separator"></div>
+<!-- ==================== DETECTION FOR SPECIFIC TECHNIQUES ==================== -->
+<div class="section-header"><h2><span>//</span> Technique-Specific <span class="green">Detection</span></h2><p class="section-desc">Targeted detection guidance mapped directly to red team TTPs. For each attacker technique, the corresponding visibility, alert, and hardening control.</p></div>
+
+<div class="data-flow-card"><h4>Attack Technique &rarr; Detection Source &rarr; Response Matrix</h4><pre>
+<span class="key">TECHNIQUE</span>                         <span class="type">PRIMARY DETECTION</span>                          <span class="comment">RESPONSE ACTION</span>
+<span class="val">Spear phishing (HTML smuggling)</span>   Email gateway + browser telemetry          Block sender/domain; hunt recipients
+<span class="val">LNK / ISO delivery</span>               Email attachment scan; Sysmon Event 1      Block file type; hunt for execution
+<span class="val">Shellcode loader (custom)</span>         EDR behavioral + AMSI (if PS)              Isolate host; memory forensics
+<span class="val">Process injection</span>                 Sysmon 8/10; ETW-Ti; EDR                   Terminate injected process; investigate parent
+<span class="val">DLL sideloading</span>                   Sysmon 7 (DLL load); PE signature check     Block sideload path; hunt similar pairs
+<span class="val">LOLBin abuse (mshta/msbuild)</span>     Sysmon 1 + network events from LOLBin      Block via ASR rules; investigate command line
+<span class="val">AMSI/ETW patching</span>                 EDR memory integrity; ntdll hash check      Alert on process patching ntdll
+<span class="val">LSASS credential dump</span>             Sysmon 10 (GrantedAccess); EDR             <span class="danger">CRITICAL</span> — full cred scope + reset
+<span class="val">Kerberoasting</span>                     Event 4769 etype=0x17                       Rotate SPN passwords; enforce AES
+<span class="val">DCSync</span>                             Event 4662 + DRS rights + non-DC source     <span class="danger">CRITICAL</span> — full DA scope; krbtgt x2
+<span class="val">Pass-the-Hash</span>                     Event 4624 Type 3 with no 4648 prior        Scope account; rotate all impacted
+<span class="val">Golden Ticket</span>                     Event 4769 with anomalous PAC data          krbtgt x2; re-scope all access
+<span class="val">PsExec lateral movement</span>           Event 7045 (service); Sysmon 1/17/18        Block on other hosts; trace source
+<span class="val">WMI remote execution</span>              WMI-Activity log; WmiPrvSE children         Investigate source creds; scope
+<span class="val">Scheduled task creation</span>           Event 4698; Sysmon 1 (schtasks.exe)        Delete task; investigate creator
+<span class="val">Registry persistence (Run key)</span>    Sysmon 13; Autoruns baseline diff           Remove key; hunt similar on fleet
+<span class="val">DNS exfiltration</span>                  Sysmon 22; Zeek dns.log; volume anomaly     Block domain; investigate host
+<span class="val">HTTPS C2 beaconing</span>               Beaconing detection; JA3; Zeek conn.log     Block C2 domain/IP; isolate host
+<span class="val">Cloud token theft / device code</span>  Sign-in risk; Entra ID Protection          Revoke all tokens; CAP review
+<span class="val">App registration backdoor</span>         Alert: new app with Graph permissions       Remove app; audit all consents
+<span class="val">ADCS ESC1 exploitation</span>           ADCS audit log; cert with SAN for DA        Revoke cert; fix template; audit
+<span class="val">ClickFix / clipboard paste</span>       PowerShell ScriptBlock 4104; Run dialog     Block execution; user education
+<span class="val">Ransomware encryption</span>             Controlled Folder Access; mass file rename  <span class="danger">EMERGENCY</span> — activate BC/DR
+<span class="val">BYOVD (vulnerable driver)</span>        Sysmon 6 (driver load); WDAC block          Block driver hash; WDAC policy update
+</pre></div>
+
+<div class="details-grid">
+  <div class="detail-card border-green"><span class="tag detect">DETECT</span><h3>Detecting C2 Frameworks</h3><div class="card-sub">Cobalt Strike, Havoc, Sliver, Brute Ratel — each has detectable signatures and behavioral patterns</div><div class="card-body"><ul class="card-list"><li><strong>Cobalt Strike</strong>: Default JARM fingerprint <code class="tool">07d14d16d21d21d07c42d41d00041d24a458a375eef0c576d23a7bab9a9fb1</code>; named pipe patterns; fork &amp; run process spawning</li><li><strong>CS named pipes</strong>: Default named pipe names (<code>\\.\pipe\MSSE-XXX-server</code>, <code>\\.\pipe\postex_ssh_XXX</code>) — Sysmon Event 17/18</li><li><strong>CS beacon spawn</strong>: Default spawn-to process is rundll32.exe spawning with no command line — unusual parent-child</li><li><strong>Havoc</strong>: Demon agent HTTP patterns; Ekko sleep obfuscation creates detectable timer-chain API sequences</li><li><strong>Sliver</strong>: Go runtime indicators in memory; large binary size (10MB+); mTLS certificate patterns</li><li><strong>Brute Ratel</strong>: LDAP-based C2 creates unusual LDAP query patterns; stack traces with proprietary patterns</li><li><strong>Universal C2 indicators</strong>: JA3/JA3S fingerprinting; JARM scanning; beaconing detection; process hollowing indicators</li></ul></div></div>
+
+  <div class="detail-card border-green"><span class="tag detect">DETECT</span><h3>Detecting ADCS Attacks</h3><div class="card-sub">Certificate-based attacks are difficult to detect — dedicated logging and monitoring required</div><div class="card-body"><ul class="card-list"><li><strong>Enable CA audit logging</strong>: Event 4886 (cert issued), 4887 (cert issued with SAN), 4897 (role separation) — not enabled by default</li><li><strong>Alert on SAN in certs</strong>: Any certificate issued with a Subject Alternative Name containing a privileged UPN (Domain Admins, admin accounts)</li><li><strong>Off-hours certificate issuance</strong>: Certificates requested/issued outside business hours for privileged accounts</li><li><strong>Template modification</strong>: Event 4899 — certificate template modified. Should be rare and change-controlled</li><li><strong>PKINIT anomalies</strong>: Kerberos pre-auth using certificate from account that never used cert auth before</li><li><strong>ESC detection rules</strong>: Sigma rules for ADCS exploitation available in SigmaHQ — alert on ESC1-ESC8 exploitation patterns</li></ul></div></div>
+
+  <div class="detail-card border-green"><span class="tag detect">DETECT</span><h3>Detecting Credential Attacks</h3><div class="card-sub">Comprehensive detection for the full credential theft and abuse lifecycle</div><div class="card-body"><ul class="card-list"><li><strong>Password spray</strong>: Event 4625 — 5+ unique accounts failing auth from single source in 60 minutes</li><li><strong>Kerberoasting</strong>: Event 4769, Ticket Encryption Type = 0x17 (RC4), from non-service account. Alert on bulk requests</li><li><strong>AS-REP Roasting</strong>: Event 4768 without pre-authentication for accounts that should have it enabled</li><li><strong>PtH</strong>: Event 4624 Type 3 NTLM with no corresponding 4648 — NTLM network logon without explicit credential use</li><li><strong>DCSync</strong>: Event 4662 with Object Type = Domain, Access Mask = 0x100, from non-DC. Add exclusion for MSOL sync accounts</li><li><strong>DPAPI abuse</strong>: Unusual process calling CryptUnprotectData for another user's data — check process integrity and parent</li><li><strong>Browser credential theft</strong>: Unusual process accessing SQLite databases in Chrome/Edge AppData paths</li></ul></div></div>
+
+  <div class="detail-card border-green"><span class="tag detect">DETECT</span><h3>Detecting Email-Based Attacks</h3><div class="card-sub">Phishing detection, AitM patterns, and email-based initial access vectors</div><div class="card-body"><ul class="card-list"><li><strong>EvilGinx detection</strong>: Impossible travel immediately after login (different IP for the cookie vs. login); browser fingerprint mismatch</li><li><strong>Device code phishing</strong>: Sign-in from new device immediately after device code completion from different IP; alert on rapid device code usage</li><li><strong>OAuth consent abuse</strong>: New app registration granted mail.read or files.read permissions by non-admin users</li><li><strong>Inbox rule creation</strong>: Forwarding rules to external domains, deletion rules matching keywords — common in BEC</li><li><strong>MailSniper patterns</strong>: Bulk EWS access, search operations across many mailboxes from single account — data exfil pattern</li><li><strong>Email impersonation</strong>: Sender domain visually similar to trusted domain — alert on lookalike domains via DMARC reports</li></ul></div></div>
+</div>
+
+<div class="separator"></div>
+
+<!-- ==================== SOC OPERATIONS ==================== -->
+<div class="section-header"><h2><span>//</span> SOC <span class="sky">Operations</span></h2><p class="section-desc">Running an effective Security Operations Center — from alert handling and shift handover to metrics, tooling, and analyst development.</p></div>
+
+<div class="details-grid">
+  <div class="detail-card border-sky"><span class="tag siem">SOC</span><h3>Alert Triage Workflow</h3><div class="card-sub">Structured approach to processing alerts — minimize MTTD and MTTR while managing analyst load</div><div class="card-body"><ul class="card-list"><li><strong>Triage SLA</strong>: All Critical alerts acknowledged in 15 min; High in 1 hour; Medium in 4 hours. Track against SLA in SOAR</li><li><strong>Enrichment automation</strong>: Auto-enrich every alert with user details, asset owner, threat intel lookups, prior incidents — before analyst sees it</li><li><strong>Priority queues</strong>: Separate queues by severity and data source — don't mix P1 EDR alerts with P3 vulnerability findings</li><li><strong>Context gathering</strong>: Before escalating, analyst should answer: What happened? When? On what? By whom? Is it still happening?</li><li><strong>False positive management</strong>: Track every FP. After 3 FPs from same rule, tune or suppress. Build a suppression knowledge base</li><li><strong>Escalation criteria</strong>: Pre-defined criteria for L1→L2→IR escalation — removes judgment calls in high-stress moments</li></ul></div></div>
+
+  <div class="detail-card border-sky"><span class="tag siem">SOC</span><h3>SOAR Automation</h3><div class="card-sub">Automate repetitive response actions — let analysts focus on judgment, not mechanics</div><div class="card-body"><ul class="card-list"><li><strong>Enrichment playbooks</strong>: Auto-run VirusTotal, Shodan, WHOIS, internal asset lookup on every IOC — analysts see enriched context immediately</li><li><strong>Containment playbooks</strong>: Auto-isolate endpoint on critical EDR alert; auto-disable account on critical identity alert (with approval workflow)</li><li><strong>Notification playbooks</strong>: Auto-notify asset owner on first critical alert; escalate to IR manager if no acknowledgment in SLA window</li><li><strong>Ticket creation</strong>: Auto-create JIRA/ServiceNow ticket with full context for every true positive — no manual data entry</li><li><strong>Platforms</strong>: Palo Alto XSOAR, Splunk SOAR, Microsoft Sentinel Playbooks (Logic Apps), TheHive + Cortex, Shuffle (open source)</li><li><strong>Human in the loop</strong>: Automate enrichment and notification freely; gate destructive actions (block, disable, isolate) behind analyst approval</li></ul></div></div>
+
+  <div class="detail-card border-sky"><span class="tag siem">SOC</span><h3>SOC Metrics</h3><div class="card-sub">Measuring SOC effectiveness — operational health, detection quality, and response performance</div><div class="card-body"><ul class="card-list"><li><strong>MTTD</strong>: Mean Time to Detect — from attacker first action to alert generation. Target: &lt;24 hours</li><li><strong>MTTR</strong>: Mean Time to Respond — from alert to containment action. Target: &lt;4 hours for critical</li><li><strong>MTTC</strong>: Mean Time to Contain — from detection to full containment. Target varies by severity</li><li><strong>Alert-to-incident ratio</strong>: What % of alerts become confirmed incidents? Too high = missing coverage; too low = too much noise</li><li><strong>False positive rate per rule</strong>: Track by detection rule — high FP rules need tuning or retirement</li><li><strong>ATT&amp;CK coverage %</strong>: What % of techniques have at least one detection? Track quarterly improvement</li><li><strong>Dwell time</strong>: How long attackers were present before detection — the primary security outcome metric</li></ul></div></div>
+
+  <div class="detail-card border-sky"><span class="tag siem">SOC</span><h3>Case Management &amp; Documentation</h3><div class="card-sub">Track incidents, preserve evidence chains, and build institutional knowledge</div><div class="card-body"><ul class="card-list"><li><strong>TheHive</strong>: Open-source security incident response platform — case management, tasks, observables, and Cortex analyzer integration</li><li><strong>IRIS</strong>: Open-source IR case management — timeline, graph relationships, evidence tracking, report generation</li><li><strong>Jira / ServiceNow</strong>: Enterprise ticketing with customized IR workflows — links to SIEM alerts, tracks SLA, escalation paths</li><li><strong>Timeline documentation</strong>: Every IR case needs a chronological timeline — attacker actions with timestamps, analyst actions, containment events</li><li><strong>Chain of custody</strong>: Document evidence collection steps — who collected, when, from where, hash of collected artifacts</li><li><strong>Post-IR report</strong>: Executive summary + technical timeline + root cause + recommendations — produced for every major incident</li></ul></div></div>
+</div>
+
+<div class="separator"></div>
+
+<!-- ==================== TOOL ARSENAL ==================== -->
+<div class="section-header"><h2><span>//</span> Blue Team <span class="cyan">Tool Arsenal</span></h2><p class="section-desc">Essential defensive tools organized by function. The best tools are the ones your team actually uses — invest in training and process, not just tooling.</p></div>
+
+<div class="data-flow-card"><h4>Tool Reference by Function</h4><pre>
+<span class="key">SIEM / LOG MANAGEMENT</span>
+├── <span class="val">Splunk</span> / <span class="val">Splunk ES</span> / <span class="val">Splunk SOAR</span>          <span class="comment">// Enterprise SIEM, security analytics, and orchestration</span>
+├── <span class="val">Microsoft Sentinel</span> / <span class="val">Defender XDR</span>        <span class="comment">// Cloud-native SIEM with deep M365/Azure integration</span>
+├── <span class="val">Elastic Security</span> / <span class="val">ELK Stack</span>             <span class="comment">// Open-source SIEM with ML and detection engine</span>
+├── <span class="val">IBM QRadar</span> / <span class="val">LogRhythm</span>                   <span class="comment">// Enterprise SIEM platforms</span>
+└── <span class="val">Graylog</span> / <span class="val">OpenSearch Security</span>            <span class="comment">// Open-source log management alternatives</span>
+
+<span class="key">EDR / ENDPOINT</span>
+├── <span class="val">Microsoft Defender for Endpoint (MDE)</span>   <span class="comment">// Native Windows EDR, ASR rules, MDE Advanced Hunting</span>
+├── <span class="val">CrowdStrike Falcon</span>                      <span class="comment">// Best-in-class behavioral EDR, custom IOA rules</span>
+├── <span class="val">SentinelOne Singularity</span>                 <span class="comment">// Autonomous EDR with ransomware rollback</span>
+├── <span class="val">Cortex XDR</span> (Palo Alto)                  <span class="comment">// XDR platform, strong network integration</span>
+├── <span class="val">Velociraptor</span>                            <span class="comment">// Open-source DFIR platform, VQL-based hunting</span>
+└── <span class="val">Sysmon</span> + <span class="val">Sysmon Modular</span>                <span class="comment">// Endpoint telemetry enhancement, free from Sysinternals</span>
+
+<span class="key">NETWORK DETECTION</span>
+├── <span class="val">Zeek (Bro)</span>                              <span class="comment">// Network security monitor, protocol analyzers</span>
+├── <span class="val">Suricata</span>                                <span class="comment">// IDS/IPS with Emerging Threats ruleset</span>
+├── <span class="val">Arkime (Moloch)</span>                         <span class="comment">// Full PCAP capture, indexing, and analysis</span>
+├── <span class="val">RITA</span>                                    <span class="comment">// Beaconing and C2 detection via Zeek logs</span>
+├── <span class="val">Security Onion</span>                          <span class="comment">// NSM distro bundling Zeek + Suricata + Elastic</span>
+└── <span class="val">ntopng</span> / <span class="val">NetFlow Analyzer</span>             <span class="comment">// NetFlow visualization and anomaly detection</span>
+
+<span class="key">IDENTITY & ACCESS</span>
+├── <span class="val">Microsoft Entra ID Protection</span>           <span class="comment">// Risk-based identity protection, impossible travel</span>
+├── <span class="val">CyberArk</span> / <span class="val">BeyondTrust</span> / <span class="val">Delinea</span>       <span class="comment">// Privileged Access Management (PAM)</span>
+├── <span class="val">Microsoft LAPS</span> / <span class="val">Legacy LAPS</span>            <span class="comment">// Unique local admin passwords per machine</span>
+├── <span class="val">PingCastle</span> / <span class="val">Purple Knight</span>             <span class="comment">// Active Directory security assessment</span>
+├── <span class="val">Locksmith</span> / <span class="val">Certify</span>                    <span class="comment">// ADCS vulnerability identification and fix guidance</span>
+└── <span class="val">BloodHound CE</span> / <span class="val">Adalanche</span>              <span class="comment">// AD attack path analysis from defender perspective</span>
+
+<span class="key">THREAT INTELLIGENCE</span>
+├── <span class="val">MISP</span> / <span class="val">OpenCTI</span>                         <span class="comment">// Open-source TIP with STIX/TAXII support</span>
+├── <span class="val">Recorded Future</span> / <span class="val">ThreatConnect</span>        <span class="comment">// Commercial CTI platforms</span>
+├── <span class="val">VirusTotal</span> / <span class="val">ANY.RUN</span>                   <span class="comment">// Malware analysis and IOC lookup</span>
+├── <span class="val">CAPA</span> / <span class="val">FLOSS</span>                           <span class="comment">// Capability extraction and string deobfuscation</span>
+├── <span class="val">Ghidra</span> / <span class="val">IDA Pro</span>                       <span class="comment">// Reverse engineering and binary analysis</span>
+└── <span class="val">Cuckoo / CAPE Sandbox</span>                  <span class="comment">// Self-hosted malware detonation</span>
+
+<span class="key">THREAT HUNTING</span>
+├── <span class="val">Atomic Red Team</span>                        <span class="comment">// MITRE ATT&CK-mapped detection validation</span>
+├── <span class="val">Caldera</span>                                <span class="comment">// Automated adversary emulation platform</span>
+├── <span class="val">RITA</span> / <span class="val">AC-Hunter</span>                       <span class="comment">// Automated C2 beaconing detection</span>
+├── <span class="val">ThreatHunter-Playbook</span>                  <span class="comment">// Community hunt playbook library</span>
+└── <span class="val">Hayabusa</span>                               <span class="comment">// Fast Windows event log hunter with Sigma rules</span>
+
+<span class="key">FORENSICS & IR</span>
+├── <span class="val">Volatility 3</span>                           <span class="comment">// Memory forensics framework</span>
+├── <span class="val">MemProcFS</span>                              <span class="comment">// Mount memory images as filesystem</span>
+├── <span class="val">Eric Zimmerman Tools</span>                   <span class="comment">// EvtxECmd, PECmd, AmcacheParser, ShimCacheParser</span>
+├── <span class="val">Plaso / log2timeline</span>                   <span class="comment">// Super-timeline generation from forensic artifacts</span>
+├── <span class="val">Autopsy / Sleuth Kit</span>                   <span class="comment">// Open-source disk forensics platform</span>
+├── <span class="val">FTK / Magnet AXIOM</span>                     <span class="comment">// Commercial forensics platforms</span>
+├── <span class="val">winpmem / LiME</span>                         <span class="comment">// Memory acquisition (Windows / Linux)</span>
+└── <span class="val">TheHive / IRIS</span>                         <span class="comment">// IR case management platforms</span>
+
+<span class="key">DECEPTION</span>
+├── <span class="val">Thinkst Canary</span>                         <span class="comment">// Commercial honeypot hardware/VMs</span>
+├── <span class="val">Canarytokens.org</span>                       <span class="comment">// Free web-based canary token generator</span>
+├── <span class="val">OpenCanary</span>                             <span class="comment">// Open-source honeypot service emulator</span>
+└── <span class="val">Attivo (SentinelOne)</span>                   <span class="comment">// Enterprise deception platform</span>
+
+<span class="key">VULNERABILITY MANAGEMENT</span>
+├── <span class="val">Tenable Nessus / Tenable.io</span>            <span class="comment">// Industry standard vulnerability scanner</span>
+├── <span class="val">Qualys VMDR</span> / <span class="val">Rapid7 InsightVM</span>        <span class="comment">// Cloud-based VM platforms</span>
+├── <span class="val">Nuclei</span>                                 <span class="comment">// Template-based web/app vulnerability scanner</span>
+├── <span class="val">Prowler</span> / <span class="val">ScoutSuite</span>                  <span class="comment">// Cloud security posture assessment</span>
+├── <span class="val">Trivy / Grype</span>                          <span class="comment">// Container/IaC vulnerability scanning</span>
+└── <span class="val">Checkov</span>                               <span class="comment">// IaC security scanning (Terraform, CloudFormation)</span>
+
+<span class="key">CLOUD DEFENSE</span>
+├── <span class="val">Microsoft Defender for Cloud</span>           <span class="comment">// Multi-cloud CSPM and workload protection</span>
+├── <span class="val">AWS GuardDuty / Security Hub</span>           <span class="comment">// AWS native threat detection and posture management</span>
+├── <span class="val">Falco</span>                                  <span class="comment">// Kubernetes and container runtime security</span>
+├── <span class="val">CloudFox</span>                               <span class="comment">// Cloud attack surface discovery from defender POV</span>
+└── <span class="val">Stratus Red Team</span>                       <span class="comment">// Cloud ATT&CK technique testing</span>
+
+<span class="key">DETECTION ENGINEERING</span>
+├── <span class="val">SigmaHQ / sigma-cli</span>                   <span class="comment">// Generic detection rule format and compiler</span>
+├── <span class="val">ATT&CK Navigator</span>                       <span class="comment">// Coverage visualization and gap analysis</span>
+├── <span class="val">Detection Lab</span>                          <span class="comment">// Pre-built lab environment for detection testing</span>
+├── <span class="val">MITRE D3FEND</span>                           <span class="comment">// Countermeasure framework mapped to ATT&CK</span>
+└── <span class="val">Uncoder.io</span>                             <span class="comment">// Online Sigma rule translator and IDE</span>
+</pre></div>
+
+<div class="separator"></div>
+
+<!-- ==================== KEY DETECTION SIGNATURES ==================== -->
+<div class="section-header"><h2><span>//</span> Key Detection <span class="red">Signatures</span> &amp; Event IDs</h2><p class="section-desc">Critical Windows Event IDs, network signatures, and behavioral patterns every SOC analyst should know by heart.</p></div>
+
+<div class="data-flow-card"><h4>Windows Security Events Quick Reference</h4><pre>
+<span class="key">AUTHENTICATION EVENTS</span>
+├── <span class="good">4624</span>  Successful logon  │ Type 2=interactive · Type 3=network · Type 9=runas · Type 10=remote
+├── <span class="danger">4625</span>  Failed logon      │ Password spray · brute force source
+├── <span class="warn">4648</span>  Explicit credentials logon  │ runas / PtH preparation
+├── <span class="warn">4672</span>  Special privileges assigned  │ Admin logon · track DA usage
+└── <span class="danger">4776</span>  NTLM credential validation   │ NTLM use (should be rare if Kerberos enforced)
+
+<span class="key">PRIVILEGE &amp; ACCOUNT EVENTS</span>
+├── <span class="warn">4720</span>  Account created              │ Unauthorized user creation
+├── <span class="warn">4728</span>  Member added to global group  │ Sensitive group (Domain Admins) membership change
+├── <span class="danger">4756</span>  Member added to universal group │ Enterprise Admins or high-priv group change
+├── <span class="warn">4738</span>  User account changed           │ Pre-auth disabled = AS-REP roastable; PwdNotReqd flag
+└── <span class="warn">4765</span>  SID History added              │ Privilege escalation via SID History injection
+
+<span class="key">PROCESS &amp; EXECUTION EVENTS</span>
+├── <span class="good">4688</span>  Process creation (with command line) │ Requires Audit + command line policy
+├── <span class="warn">4689</span>  Process termination                    │ Track execution duration
+└── <span class="warn">4703</span>  Token privilege adjusted               │ Privilege escalation indicator
+
+<span class="key">AD-SPECIFIC EVENTS</span>
+├── <span class="danger">4662</span>  Directory object access      │ DCSync: mask=0x100 on domain object from non-DC
+├── <span class="warn">4741</span>  Computer account created      │ Unauthorized machine account creation
+├── <span class="warn">4769</span>  Kerberos service ticket       │ Kerberoasting: etype=0x17 (RC4) for service accounts
+├── <span class="warn">4768</span>  Kerberos AS ticket            │ AS-REP roasting: pre-auth disabled accounts
+└── <span class="warn">4771</span>  Kerberos pre-auth failed      │ Kerberos password spray equivalent of 4625
+
+<span class="key">SCHEDULED TASK &amp; SERVICE EVENTS</span>
+├── <span class="danger">4698</span>  Scheduled task created   │ Attacker persistence: inspect task action for unusual commands
+├── <span class="warn">4702</span>  Scheduled task updated    │ Task modification — might signal updated persistence
+├── <span class="danger">7045</span>  New service installed     │ PsExec / attacker service drop — review service binary path
+└── <span class="warn">7040</span>  Service config changed    │ SCShell lateral movement — less monitored than 7045
+
+<span class="key">CERTIFICATE SERVICES EVENTS</span>
+├── <span class="warn">4886</span>  Certificate issued               │ Monitor for sensitive templates and off-hours issuance
+├── <span class="danger">4887</span>  Certificate issued with SAN      │ ESC1 abuse: SAN containing privileged account UPN
+└── <span class="warn">4899</span>  Certificate template modified    │ ESC4 attack: template modification for exploitation
+
+<span class="key">SYSMON EVENTS</span>
+├── <span class="good">1</span>   Process create (with hashes + cmdline)
+├── <span class="warn">3</span>   Network connection (process→IP correlation)
+├── <span class="warn">7</span>   Image loaded (DLL loads with signature check)
+├── <span class="warn">8</span>   CreateRemoteThread (cross-process injection alert)
+├── <span class="danger">10</span>  ProcessAccess (LSASS reads: GrantedAccess 0x1FFFFF)
+├── <span class="warn">11</span>  File create (malware dropping files)
+├── <span class="warn">12/13/14</span> Registry events (persistence key monitoring)
+├── <span class="warn">15</span>  FileCreateStreamHash (NTFS ADS creation)
+├── <span class="warn">17/18</span> PipeEvent (C2 named pipe detection)
+├── <span class="warn">22</span>  DNSEvent (process-to-DNS query correlation)
+└── <span class="warn">25</span>  ProcessTampering (process image hollowing/herpaderping)
+</pre></div>
+
+<footer>
+  Blue Team Mapper
+</footer>
+</div>
+</body>
+</html>
